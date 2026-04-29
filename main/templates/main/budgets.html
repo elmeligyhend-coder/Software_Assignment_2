@@ -1,0 +1,636 @@
+{% extends 'main/base.html' %} {% block extra_css %}
+<style>
+  .budgets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .header-left h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .header-left p {
+    color: var(--gray-500);
+  }
+
+  .budget-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .budget-summary {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .budget-summary {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .summary-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .summary-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .summary-icon.total {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .summary-icon.spent {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .summary-icon.remaining {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .summary-icon.over {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .summary-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .summary-label {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+
+  .budget-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    .budget-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .budget-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .budget-category {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .budget-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .budget-icon.food {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .budget-icon.transport {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .budget-icon.shopping {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .budget-icon.entertainment {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+  }
+
+  .budget-icon.bills {
+    background: rgba(236, 72, 153, 0.1);
+    color: #ec4899;
+  }
+
+  .budget-icon.health {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .budget-info h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .budget-info p {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+
+  .budget-status {
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .budget-status.on-track {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .budget-status.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .budget-status.over {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .budget-amounts {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .budget-amounts .spent {
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .budget-amounts .total {
+    color: var(--gray-500);
+  }
+
+  .budget-progress {
+    height: 12px;
+    background: var(--gray-100);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+
+  .budget-progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  .budget-progress-fill.green {
+    background: linear-gradient(90deg, var(--secondary) 0%, #34d399 100%);
+  }
+
+  .budget-progress-fill.yellow {
+    background: linear-gradient(90deg, var(--warning) 0%, #fbbf24 100%);
+  }
+
+  .budget-progress-fill.red {
+    background: linear-gradient(90deg, var(--danger) 0%, #f87171 100%);
+  }
+
+  .budget-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-100);
+  }
+
+  .budget-remaining {
+    font-size: 0.875rem;
+  }
+
+  .budget-remaining .amount {
+    font-weight: 600;
+  }
+
+  .budget-remaining.positive .amount {
+    color: var(--secondary);
+  }
+
+  .budget-remaining.negative .amount {
+    color: var(--danger);
+  }
+
+  .budget-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .budget-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .budget-btn.edit {
+    background: var(--gray-100);
+    color: var(--gray-600);
+  }
+
+  .budget-btn.edit:hover {
+    background: var(--gray-200);
+  }
+
+  .add-budget-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 280px;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px dashed var(--gray-200);
+  }
+
+  .add-budget-card:hover {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.02);
+  }
+
+  .add-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+    transition: var(--transition);
+  }
+
+  .add-budget-card:hover .add-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .add-budget-card h3 {
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 0.25rem;
+  }
+
+  .add-budget-card p {
+    font-size: 0.875rem;
+    color: var(--gray-400);
+  }
+
+  .month-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .month-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--gray-200);
+    background: white;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--gray-600);
+  }
+
+  .month-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  .month-display {
+    font-weight: 600;
+    color: var(--dark);
+    min-width: 140px;
+    text-align: center;
+  }
+</style>
+{% endblock %} {% block content %}
+{% include 'components/navbar.html' %}
+
+<main class="main-content">
+  <div class="budgets-header">
+    <div class="header-left">
+      <h1>Budgets</h1>
+      <p>Manage your monthly spending limits</p>
+    </div>
+    <div class="month-selector">
+      <button class="month-btn">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <span class="month-display">April 2026</span>
+      <button class="month-btn">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="budget-summary">
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-icon total">
+          <i class="fas fa-wallet"></i>
+        </div>
+      </div>
+      <div class="summary-value">$2,400</div>
+      <div class="summary-label">Total Budget</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-icon spent">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+      </div>
+      <div class="summary-value">$1,530</div>
+      <div class="summary-label">Total Spent</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-icon remaining">
+          <i class="fas fa-piggy-bank"></i>
+        </div>
+      </div>
+      <div class="summary-value">$870</div>
+      <div class="summary-label">Remaining</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-card-header">
+        <div class="summary-icon over">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+      </div>
+      <div class="summary-value">1</div>
+      <div class="summary-label">Over Budget</div>
+    </div>
+  </div>
+
+  <div class="budget-grid">
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon food">
+            <i class="fas fa-utensils"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Food & Dining</h3>
+            <p>Groceries, restaurants, delivery</p>
+          </div>
+        </div>
+        <span class="budget-status warning">75% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$450</span>
+        <span class="total">/ $600</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill yellow" style="width: 75%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining positive">
+          <span class="amount">$150</span> remaining
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon transport">
+            <i class="fas fa-bus"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Transportation</h3>
+            <p>Gas, public transit, rideshare</p>
+          </div>
+        </div>
+        <span class="budget-status on-track">75% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$150</span>
+        <span class="total">/ $200</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill green" style="width: 75%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining positive">
+          <span class="amount">$50</span> remaining
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon entertainment">
+            <i class="fas fa-film"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Entertainment</h3>
+            <p>Movies, games, streaming</p>
+          </div>
+        </div>
+        <span class="budget-status over">130% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$130</span>
+        <span class="total">/ $100</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill red" style="width: 100%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining negative">
+          <span class="amount">-$30</span> over budget
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon shopping">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Shopping</h3>
+            <p>Clothes, electronics, accessories</p>
+          </div>
+        </div>
+        <span class="budget-status on-track">67% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$200</span>
+        <span class="total">/ $300</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill green" style="width: 67%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining positive">
+          <span class="amount">$100</span> remaining
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon bills">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Bills & Utilities</h3>
+            <p>Electricity, water, internet</p>
+          </div>
+        </div>
+        <span class="budget-status on-track">58% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$350</span>
+        <span class="total">/ $600</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill green" style="width: 58%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining positive">
+          <span class="amount">$250</span> remaining
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-card">
+      <div class="budget-header">
+        <div class="budget-category">
+          <div class="budget-icon health">
+            <i class="fas fa-heartbeat"></i>
+          </div>
+          <div class="budget-info">
+            <h3>Health & Fitness</h3>
+            <p>Gym, medical, pharmacy</p>
+          </div>
+        </div>
+        <span class="budget-status on-track">42% Used</span>
+      </div>
+      <div class="budget-amounts">
+        <span class="spent">$250</span>
+        <span class="total">/ $600</span>
+      </div>
+      <div class="budget-progress">
+        <div class="budget-progress-fill green" style="width: 42%"></div>
+      </div>
+      <div class="budget-footer">
+        <div class="budget-remaining positive">
+          <span class="amount">$350</span> remaining
+        </div>
+        <div class="budget-actions">
+          <button class="budget-btn edit">
+            <i class="fas fa-edit"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-budget-card">
+      <div class="add-icon">
+        <i class="fas fa-plus"></i>
+      </div>
+      <h3>Add New Budget</h3>
+      <p>Create a new budget category</p>
+    </div>
+  </div>
+</main>
+{% endblock %}

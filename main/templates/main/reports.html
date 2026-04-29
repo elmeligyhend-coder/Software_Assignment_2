@@ -1,0 +1,594 @@
+{% extends 'main/base.html' %} {% block extra_css %}
+<style>
+  .report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .date-range-picker {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .date-range-picker input {
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--dark);
+    background: transparent;
+  }
+
+  .date-range-picker input:focus {
+    outline: none;
+  }
+
+  .date-range-picker span {
+    color: var(--gray-400);
+  }
+
+  .chart-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .chart-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .chart-legend {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--gray-600);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.income {
+    background: var(--secondary);
+  }
+
+  .legend-dot.expense {
+    background: var(--danger);
+  }
+
+  .pie-chart-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .pie-chart {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(
+      #ef4444 0deg 108deg,
+      #f59e0b 108deg 180deg,
+      #6366f1 180deg 234deg,
+      #10b981 234deg 288deg,
+      #8b5cf6 288deg 324deg,
+      #ec4899 324deg 360deg
+    );
+    position: relative;
+  }
+
+  .pie-chart::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  .pie-chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 1;
+  }
+
+  .pie-chart-center .amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .pie-chart-center .label {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+  }
+
+  .pie-legend {
+    flex: 1;
+  }
+
+  .pie-legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .pie-legend-item:last-child {
+    border-bottom: none;
+  }
+
+  .pie-legend-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .pie-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  .pie-legend-name {
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .pie-legend-percent {
+    font-weight: 600;
+    color: var(--gray-600);
+  }
+
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 250px;
+    padding: 1rem 0;
+  }
+
+  .bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+  }
+
+  .bar-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    height: 200px;
+  }
+
+  .bar {
+    width: 32px;
+    border-radius: 6px 6px 0 0;
+    transition: var(--transition);
+  }
+
+  .bar.income {
+    background: linear-gradient(180deg, var(--secondary) 0%, #059669 100%);
+  }
+
+  .bar.expense {
+    background: linear-gradient(180deg, var(--danger) 0%, #dc2626 100%);
+  }
+
+  .bar-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--gray-500);
+  }
+
+  .insights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .insight-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .insight-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .insight-icon.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .insight-icon.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success);
+  }
+
+  .insight-icon.info {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .insight-icon.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .insight-content h4 {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .insight-content p {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    line-height: 1.5;
+  }
+
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 1024px) {
+    .summary-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .summary-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .summary-stat {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+
+  .summary-stat-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .summary-stat.income .summary-stat-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .summary-stat.expense .summary-stat-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .summary-stat.savings .summary-stat-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .summary-stat.transactions .summary-stat-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .summary-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .summary-stat-label {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-top: 0.25rem;
+  }
+
+  .export-section {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+{% include 'components/navbar.html' %}
+
+<main class="main-content">
+  <div class="report-header">
+    <div>
+      <h1 class="page-title">Financial Reports</h1>
+      <p class="page-subtitle">
+        Analyze your spending patterns and financial health
+      </p>
+    </div>
+    <div class="date-range-picker">
+      <input type="date" value="2026-04-01" />
+      <span>to</span>
+      <input type="date" value="2026-04-29" />
+      <button class="btn btn-secondary" style="padding: 0.5rem 1rem">
+        <i class="fas fa-calendar"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="summary-stats">
+    <div class="summary-stat income">
+      <div class="summary-stat-icon">
+        <i class="fas fa-arrow-up"></i>
+      </div>
+      <div class="summary-stat-value">$12,450</div>
+      <div class="summary-stat-label">Total Income</div>
+    </div>
+    <div class="summary-stat expense">
+      <div class="summary-stat-icon">
+        <i class="fas fa-arrow-down"></i>
+      </div>
+      <div class="summary-stat-value">$7,832</div>
+      <div class="summary-stat-label">Total Expenses</div>
+    </div>
+    <div class="summary-stat savings">
+      <div class="summary-stat-icon">
+        <i class="fas fa-piggy-bank"></i>
+      </div>
+      <div class="summary-stat-value">$4,618</div>
+      <div class="summary-stat-label">Net Savings</div>
+    </div>
+    <div class="summary-stat transactions">
+      <div class="summary-stat-icon">
+        <i class="fas fa-exchange-alt"></i>
+      </div>
+      <div class="summary-stat-value">47</div>
+      <div class="summary-stat-label">Transactions</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom: 2rem">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Expense Breakdown</h3>
+      </div>
+      <div class="pie-chart-container">
+        <div class="pie-chart" style="position: relative">
+          <div class="pie-chart-center">
+            <div class="amount">$7,832</div>
+            <div class="label">Total</div>
+          </div>
+        </div>
+        <div class="pie-legend">
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #ef4444"></div>
+              <span class="pie-legend-name">Food & Dining</span>
+            </div>
+            <span class="pie-legend-percent">30% ($2,349)</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #f59e0b"></div>
+              <span class="pie-legend-name">Transportation</span>
+            </div>
+            <span class="pie-legend-percent">20% ($1,566)</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #6366f1"></div>
+              <span class="pie-legend-name">Entertainment</span>
+            </div>
+            <span class="pie-legend-percent">15% ($1,175)</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #10b981"></div>
+              <span class="pie-legend-name">Shopping</span>
+            </div>
+            <span class="pie-legend-percent">15% ($1,175)</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #8b5cf6"></div>
+              <span class="pie-legend-name">Bills & Utilities</span>
+            </div>
+            <span class="pie-legend-percent">12% ($940)</span>
+          </div>
+          <div class="pie-legend-item">
+            <div class="pie-legend-left">
+              <div class="pie-legend-color" style="background: #ec4899"></div>
+              <span class="pie-legend-name">Other</span>
+            </div>
+            <span class="pie-legend-percent">8% ($627)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Income vs Expenses</h3>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <div class="legend-dot income"></div>
+            <span>Income</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot expense"></div>
+            <span>Expenses</span>
+          </div>
+        </div>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-group">
+          <div class="bar-wrapper">
+            <div class="bar income" style="height: 140px"></div>
+            <div class="bar expense" style="height: 90px"></div>
+          </div>
+          <span class="bar-label">Week 1</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrapper">
+            <div class="bar income" style="height: 160px"></div>
+            <div class="bar expense" style="height: 110px"></div>
+          </div>
+          <span class="bar-label">Week 2</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrapper">
+            <div class="bar income" style="height: 180px"></div>
+            <div class="bar expense" style="height: 130px"></div>
+          </div>
+          <span class="bar-label">Week 3</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-wrapper">
+            <div class="bar income" style="height: 150px"></div>
+            <div class="bar expense" style="height: 100px"></div>
+          </div>
+          <span class="bar-label">Week 4</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin-bottom: 2rem">
+    <div class="chart-header">
+      <h3 class="chart-title">Key Insights</h3>
+    </div>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <div class="insight-icon warning">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="insight-content">
+          <h4>High Food Spending</h4>
+          <p>
+            Your food & dining expenses are 15% above average. Consider cooking
+            more meals at home to save money.
+          </p>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="insight-content">
+          <h4>Great Savings Rate!</h4>
+          <p>
+            You're saving 37% of your income this month, which is above the
+            recommended 20% benchmark.
+          </p>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon info">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="insight-content">
+          <h4>Income Increased</h4>
+          <p>
+            Your income this month is 12% higher than last month. Keep up the
+            good work!
+          </p>
+        </div>
+      </div>
+      <div class="insight-card">
+        <div class="insight-icon danger">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="insight-content">
+          <h4>Budget Alert</h4>
+          <p>
+            You've exceeded your entertainment budget by $30. Review your
+            spending in this category.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="export-section">
+    <button class="btn btn-secondary">
+      <i class="fas fa-file-pdf"></i>
+      Export PDF
+    </button>
+    <button class="btn btn-secondary">
+      <i class="fas fa-file-csv"></i>
+      Export CSV
+    </button>
+    <button class="btn btn-primary">
+      <i class="fas fa-file-excel"></i>
+      Export Excel
+    </button>
+  </div>
+</main>
+{% endblock %}

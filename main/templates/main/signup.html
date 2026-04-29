@@ -1,0 +1,133 @@
+{% extends 'main/base.html' %} {% block content %}
+<div class="auth-container">
+  <div class="auth-card animate-fade-in">
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="logo-text sign-up">Budget<span>Wise</span></div>
+    </div>
+
+    <h1 class="auth-title">Create Account</h1>
+    <p class="auth-subtitle">Start your journey to financial freedom</p>
+
+    <form method="POST" action="{% url 'signup' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="name">Full Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="form-input"
+          placeholder="Enter your full name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          placeholder="Create a strong password"
+          required
+        />
+        <p
+          style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.5rem"
+        >
+          Must be at least 8 characters with uppercase, number, and special
+          character
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="confirm_password"
+          >Confirm Password</label
+        >
+        <input
+          type="password"
+          id="confirm_password"
+          name="confirm_password"
+          class="form-input"
+          placeholder="Confirm your password"
+          required
+        />
+      </div>
+
+      <div
+        style="
+          display: flex;
+          align-items: start;
+          gap: 0.75rem;
+          margin-bottom: 1.5rem;
+        "
+      >
+        <input
+          type="checkbox"
+          style="
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            margin-top: 2px;
+          "
+          required
+        />
+        <span style="font-size: 0.8125rem; color: var(--gray-600)">
+          I agree to the
+          <a
+            href="#"
+            style="
+              color: var(--primary);
+              text-decoration: none;
+              font-weight: 600;
+            "
+            >Terms of Service</a
+          >
+          and
+          <a
+            href="#"
+            style="
+              color: var(--primary);
+              text-decoration: none;
+              font-weight: 600;
+            "
+            >Privacy Policy</a
+          >
+        </span>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="width: 100%; justify-content: center; padding: 1rem"
+      >
+        <i class="fas fa-user-plus"></i>
+        Create Account
+      </button>
+    </form>
+
+    <div class="divider">or continue with</div>
+
+    {% include 'components/social-providers.html' %}
+
+    <p class="auth-footer">
+      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

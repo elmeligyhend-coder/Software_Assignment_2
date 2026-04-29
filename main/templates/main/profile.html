@@ -1,0 +1,572 @@
+{% extends 'main/base.html' %} {% block extra_css %}
+<style>
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+  }
+
+  .profile-avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    position: relative;
+  }
+
+  .avatar-edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .avatar-edit-btn:hover {
+    background: var(--primary-dark);
+  }
+
+  .profile-info h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-info p {
+    color: var(--gray-500);
+    margin-bottom: 1rem;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .profile-stat {
+    text-align: center;
+  }
+
+  .profile-stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .profile-stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+  }
+
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .settings-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .settings-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .settings-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+
+  .settings-icon.personal {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .settings-icon.preferences {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .settings-icon.notifications {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .settings-icon.security {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .settings-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    color: var(--dark);
+    transition: var(--transition);
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 0.9375rem;
+    color: var(--dark);
+    background: white;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .toggle-group:last-child {
+    border-bottom: none;
+  }
+
+  .toggle-label {
+    font-weight: 500;
+    color: var(--dark);
+  }
+
+  .toggle-sublabel {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-top: 0.25rem;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 52px;
+    height: 28px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--gray-300);
+    border-radius: 28px;
+    transition: var(--transition);
+  }
+
+  .toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: var(--transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggle-switch input:checked + .toggle-slider {
+    background: var(--primary);
+  }
+
+  .toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(24px);
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .danger-zone {
+    border: 2px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .danger-zone .settings-header {
+    border-bottom-color: rgba(239, 68, 68, 0.2);
+  }
+
+  .btn-danger {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-danger:hover {
+    background: #dc2626;
+  }
+
+  .member-since {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+
+  .member-since i {
+    color: var(--primary);
+  }
+</style>
+{% endblock %} {% block content %}
+{% include 'components/navbar.html' %}
+
+<main class="main-content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Profile Settings</h1>
+      <p class="page-subtitle">Manage your account and preferences</p>
+    </div>
+  </div>
+
+  <div class="profile-header">
+    <div class="profile-avatar-large">
+      AM
+      <div class="avatar-edit-btn">
+        <i class="fas fa-camera"></i>
+      </div>
+    </div>
+    <div class="profile-info">
+      <h2>Omar nasser</h2>
+      <p>Omar nasser</p>
+      <div class="member-since">
+        <i class="fas fa-calendar-check"></i>
+        Member since January 2025
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <div class="profile-stat-value">47</div>
+          <div class="profile-stat-label">Transactions</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">4</div>
+          <div class="profile-stat-label">Active Goals</div>
+        </div>
+        <div class="profile-stat">
+          <div class="profile-stat-value">6</div>
+          <div class="profile-stat-label">Budgets</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-grid">
+    <div class="settings-card">
+      <div class="settings-header">
+        <div class="settings-icon personal">
+          <i class="fas fa-user"></i>
+        </div>
+        <h3 class="settings-title">Personal Information</h3>
+      </div>
+      <form>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" value="Omar nasser" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" value="Omar nasser" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" value="+20 123 456 7890" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input" value="1995-06-15" />
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-header">
+        <div class="settings-icon preferences">
+          <i class="fas fa-cog"></i>
+        </div>
+        <h3 class="settings-title">Preferences</h3>
+      </div>
+      <form>
+        <div class="form-group">
+          <label class="form-label">Currency</label>
+          <select class="form-select">
+            <option value="USD" selected>USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - British Pound</option>
+            <option value="EGP">EGP - Egyptian Pound</option>
+            <option value="SAR">SAR - Saudi Riyal</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Language</label>
+          <select class="form-select">
+            <option value="en" selected>English</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="fr">Français (French)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date Format</label>
+          <select class="form-select">
+            <option value="MM/DD/YYYY" selected>MM/DD/YYYY</option>
+            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Timezone</label>
+          <select class="form-select">
+            <option value="UTC" selected>UTC</option>
+            <option value="Africa/Cairo">Africa/Cairo (GMT+2)</option>
+            <option value="America/New_York">America/New_York (GMT-5)</option>
+            <option value="Europe/London">Europe/London (GMT+0)</option>
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary">
+            Save Preferences
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-header">
+        <div class="settings-icon notifications">
+          <i class="fas fa-bell"></i>
+        </div>
+        <h3 class="settings-title">Notifications</h3>
+      </div>
+      <div class="toggle-group">
+        <div>
+          <div class="toggle-label">Email Notifications</div>
+          <div class="toggle-sublabel">Receive updates via email</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-group">
+        <div>
+          <div class="toggle-label">Budget Alerts</div>
+          <div class="toggle-sublabel">
+            Get notified when approaching budget limits
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-group">
+        <div>
+          <div class="toggle-label">Goal Reminders</div>
+          <div class="toggle-sublabel">Weekly reminders for savings goals</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-group">
+        <div>
+          <div class="toggle-label">Transaction Alerts</div>
+          <div class="toggle-sublabel">Notify for all new transactions</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-group">
+        <div>
+          <div class="toggle-label">Weekly Summary</div>
+          <div class="toggle-sublabel">Receive weekly spending summary</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="settings-header">
+        <div class="settings-icon security">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="settings-title">Security</h3>
+      </div>
+      <form>
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Enter current password"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Enter new password"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Confirm new password"
+          />
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary">Update Password</button>
+        </div>
+      </form>
+      <div
+        style="
+          margin-top: 1.5rem;
+          padding-top: 1.5rem;
+          border-top: 1px solid var(--gray-100);
+        "
+      >
+        <div class="toggle-group" style="border: none; padding: 0">
+          <div>
+            <div class="toggle-label">Two-Factor Authentication</div>
+            <div class="toggle-sublabel">Add an extra layer of security</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-card danger-zone">
+      <div class="settings-header">
+        <div
+          class="settings-icon security"
+          style="background: rgba(239, 68, 68, 0.1); color: var(--danger)"
+        >
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="settings-title">Danger Zone</h3>
+      </div>
+      <p
+        style="
+          color: var(--gray-600);
+          margin-bottom: 1rem;
+          font-size: 0.9375rem;
+        "
+      >
+        Once you delete your account, there is no going back. Please be certain.
+      </p>
+      <button class="btn-danger">
+        <i class="fas fa-trash-alt"></i>
+        Delete Account
+      </button>
+    </div>
+  </div>
+</main>
+{% endblock %}

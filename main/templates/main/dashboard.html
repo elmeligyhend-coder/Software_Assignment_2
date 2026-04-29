@@ -1,0 +1,739 @@
+{% extends 'main/base.html' %} {% block extra_css %}
+<style>
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+  }
+
+  .welcome-section h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .welcome-section p {
+    color: var(--gray-500);
+  }
+
+  .quick-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 1200px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+  }
+
+  .stat-card.balance::before {
+    background: var(--primary);
+  }
+
+  .stat-card.income::before {
+    background: var(--secondary);
+  }
+
+  .stat-card.expense::before {
+    background: var(--danger);
+  }
+
+  .stat-card.savings::before {
+    background: var(--warning);
+  }
+
+  .stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .stat-card.balance .stat-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .stat-card.income .stat-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .stat-card.expense .stat-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .stat-card.savings .stat-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .stat-trend.up {
+    color: var(--secondary);
+  }
+
+  .stat-trend.down {
+    color: var(--danger);
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .card-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .card-link:hover {
+    color: var(--primary-dark);
+  }
+
+  .transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    transition: var(--transition);
+  }
+
+  .transaction-item:hover {
+    background: var(--gray-100);
+  }
+
+  .transaction-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .transaction-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+  }
+
+  .transaction-icon.food {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+  }
+
+  .transaction-icon.transport {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+  }
+
+  .transaction-icon.shopping {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+  }
+
+  .transaction-icon.entertainment {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+  }
+
+  .transaction-icon.income {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--secondary);
+  }
+
+  .transaction-icon.bills {
+    background: rgba(236, 72, 153, 0.1);
+    color: #ec4899;
+  }
+
+  .transaction-details h4 {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.125rem;
+  }
+
+  .transaction-details p {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+  }
+
+  .transaction-amount {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .transaction-amount.income {
+    color: var(--secondary);
+  }
+
+  .transaction-amount.expense {
+    color: var(--danger);
+  }
+
+  .budget-progress-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .budget-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .budget-category {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .budget-amounts {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+  }
+
+  .budget-amounts .spent {
+    font-weight: 600;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-fill.green {
+    background: var(--secondary);
+  }
+
+  .progress-fill.yellow {
+    background: var(--warning);
+  }
+
+  .progress-fill.red {
+    background: var(--danger);
+  }
+
+  .goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .goal-item {
+    padding: 1rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+  }
+
+  .goal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .goal-name {
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .goal-percent {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .goal-amounts {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+    margin-bottom: 0.75rem;
+  }
+
+  .goal-progress {
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .goal-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, #818cf8 100%);
+    border-radius: 3px;
+  }
+
+  .recent-activity {
+    margin-top: 2rem;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .activity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 0.375rem;
+    flex-shrink: 0;
+  }
+
+  .activity-dot.income {
+    background: var(--secondary);
+  }
+
+  .activity-dot.expense {
+    background: var(--danger);
+  }
+
+  .activity-dot.goal {
+    background: var(--primary);
+  }
+
+  .activity-content {
+    flex: 1;
+  }
+
+  .activity-content p {
+    color: var(--dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .activity-content span {
+    font-size: 0.8125rem;
+    color: var(--gray-500);
+  }
+</style>
+{% endblock %} {% block content %}
+
+{% include 'components/navbar.html' %}
+<main class="main-content">
+  <div class="dashboard-header">
+    <div class="welcome-section">
+      <h1>Welcome back, Omar! 👋</h1>
+      <p>Here's your financial overview for April 2026</p>
+    </div>
+    <div class="quick-actions">
+      <a href="{% url 'transactions' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i>
+        Add Transaction
+      </a>
+      <button class="btn btn-secondary">
+        <i class="fas fa-download"></i>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card balance">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-wallet"></i>
+        </div>
+        <div class="stat-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>12%</span>
+        </div>
+      </div>
+      <div class="stat-value">$12,450</div>
+      <div class="stat-label">Total Balance</div>
+    </div>
+
+    <div class="stat-card income">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="stat-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>8%</span>
+        </div>
+      </div>
+      <div class="stat-value">$4,850</div>
+      <div class="stat-label">Income this month</div>
+    </div>
+
+    <div class="stat-card expense">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="stat-trend down">
+          <i class="fas fa-arrow-down"></i>
+          <span>5%</span>
+        </div>
+      </div>
+      <div class="stat-value">$2,340</div>
+      <div class="stat-label">Expenses this month</div>
+    </div>
+
+    <div class="stat-card savings">
+      <div class="stat-header">
+        <div class="stat-icon">
+          <i class="fas fa-piggy-bank"></i>
+        </div>
+        <div class="stat-trend up">
+          <i class="fas fa-arrow-up"></i>
+          <span>15%</span>
+        </div>
+      </div>
+      <div class="stat-value">$2,510</div>
+      <div class="stat-label">Savings this month</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Transactions</h3>
+        <a href="{% url 'transactions' %}" class="card-link">View All</a>
+      </div>
+      <div class="transaction-list">
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div class="transaction-icon food">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <div class="transaction-details">
+              <h4>Restaurant Dinner</h4>
+              <p>Apr 28, 2026 • Food & Dining</p>
+            </div>
+          </div>
+          <div class="transaction-amount expense">-$45.00</div>
+        </div>
+
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div class="transaction-icon transport">
+              <i class="fas fa-bus"></i>
+            </div>
+            <div class="transaction-details">
+              <h4>Monthly Pass</h4>
+              <p>Apr 27, 2026 • Transportation</p>
+            </div>
+          </div>
+          <div class="transaction-amount expense">-$85.00</div>
+        </div>
+
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div class="transaction-icon income">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="transaction-details">
+              <h4>Salary Deposit</h4>
+              <p>Apr 25, 2026 • Income</p>
+            </div>
+          </div>
+          <div class="transaction-amount income">+$3,500.00</div>
+        </div>
+
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div class="transaction-icon shopping">
+              <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="transaction-details">
+              <h4>New Headphones</h4>
+              <p>Apr 24, 2026 • Shopping</p>
+            </div>
+          </div>
+          <div class="transaction-amount expense">-$129.99</div>
+        </div>
+
+        <div class="transaction-item">
+          <div class="transaction-left">
+            <div class="transaction-icon bills">
+              <i class="fas fa-bolt"></i>
+            </div>
+            <div class="transaction-details">
+              <h4>Electricity Bill</h4>
+              <p>Apr 22, 2026 • Bills & Utilities</p>
+            </div>
+          </div>
+          <div class="transaction-amount expense">-$78.50</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Budget Overview</h3>
+          <a href="{% url 'budgets' %}" class="card-link">View All</a>
+        </div>
+        <div class="budget-progress-list">
+          <div class="budget-item">
+            <div class="budget-header">
+              <div class="budget-category">
+                <i class="fas fa-utensils" style="color: var(--danger)"></i>
+                Food & Dining
+              </div>
+              <div class="budget-amounts">
+                <span class="spent">$450</span> / $600
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill yellow" style="width: 75%"></div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="budget-header">
+              <div class="budget-category">
+                <i class="fas fa-bus" style="color: var(--warning)"></i>
+                Transportation
+              </div>
+              <div class="budget-amounts">
+                <span class="spent">$150</span> / $200
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill green" style="width: 75%"></div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="budget-header">
+              <div class="budget-category">
+                <i class="fas fa-film" style="color: #8b5cf6"></i>
+                Entertainment
+              </div>
+              <div class="budget-amounts">
+                <span class="spent">$130</span> / $100
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill red" style="width: 130%"></div>
+            </div>
+          </div>
+
+          <div class="budget-item">
+            <div class="budget-header">
+              <div class="budget-category">
+                <i
+                  class="fas fa-shopping-bag"
+                  style="color: var(--primary)"
+                ></i>
+                Shopping
+              </div>
+              <div class="budget-amounts">
+                <span class="spent">$200</span> / $300
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill green" style="width: 67%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Savings Goals</h3>
+          <a href="{% url 'goals' %}" class="card-link">View All</a>
+        </div>
+        <div class="goals-list">
+          <div class="goal-item">
+            <div class="goal-header">
+              <span class="goal-name">Emergency Fund</span>
+              <span class="goal-percent">65%</span>
+            </div>
+            <div class="goal-amounts">$3,250 / $5,000</div>
+            <div class="goal-progress">
+              <div class="goal-progress-fill" style="width: 65%"></div>
+            </div>
+          </div>
+
+          <div class="goal-item">
+            <div class="goal-header">
+              <span class="goal-name">New Laptop</span>
+              <span class="goal-percent">40%</span>
+            </div>
+            <div class="goal-amounts">$800 / $2,000</div>
+            <div class="goal-progress">
+              <div class="goal-progress-fill" style="width: 40%"></div>
+            </div>
+          </div>
+
+          <div class="goal-item">
+            <div class="goal-header">
+              <span class="goal-name">Vacation</span>
+              <span class="goal-percent">28%</span>
+            </div>
+            <div class="goal-amounts">$560 / $2,000</div>
+            <div class="goal-progress">
+              <div class="goal-progress-fill" style="width: 28%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card recent-activity">
+    <div class="card-header">
+      <h3 class="card-title">Recent Activity</h3>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot income"></div>
+      <div class="activity-content">
+        <p>Salary deposit of $3,500 received</p>
+        <span>Apr 25, 2026 at 9:00 AM</span>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot expense"></div>
+      <div class="activity-content">
+        <p>Restaurant Dinner - $45.00</p>
+        <span>Apr 28, 2026 at 7:30 PM</span>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot goal"></div>
+      <div class="activity-content">
+        <p>Added $200 to Emergency Fund goal</p>
+        <span>Apr 24, 2026 at 2:15 PM</span>
+      </div>
+    </div>
+    <div class="activity-item">
+      <div class="activity-dot expense"></div>
+      <div class="activity-content">
+        <p>Monthly transportation pass - $85.00</p>
+        <span>Apr 27, 2026 at 10:00 AM</span>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

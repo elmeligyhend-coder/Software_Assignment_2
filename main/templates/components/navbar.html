@@ -1,0 +1,60 @@
+<nav class="sidebar">
+  <a href="/" class="nav-item">
+    <div class="logo-icon">
+      <i class="fas fa-wallet"></i>
+    </div>
+    <div class="logo-text">Budget<span>Wise</span></div>
+  </a>
+
+  <div class="nav-menu">
+    <a
+      href="{% url 'dashboard' %}"
+      class="nav-item {% if request.path == '/dashboard/' %}active{% endif %}"
+    >
+      <i class="fas fa-th-large"></i>
+      Dashboard
+    </a>
+    <a
+      href="{% url 'transactions' %}"
+      class="nav-item {% if request.path == '/transactions/' %}active{% endif %}"
+    >
+      <i class="fas fa-exchange-alt"></i>
+      Transactions
+    </a>
+    <a
+      href="{% url 'budgets' %}"
+      class="nav-item {% if request.path == '/budgets/' %}active{% endif %}"
+    >
+      <i class="fas fa-chart-pie"></i>
+      Budgets
+    </a>
+    <a
+      href="{% url 'goals' %}"
+      class="nav-item {% if request.path == '/goals/' %}active{% endif %}"
+    >
+      <i class="fas fa-bullseye"></i>
+      Goals
+    </a>
+    <a
+      href="{% url 'reports' %}"
+      class="nav-item {% if request.path == '/reports/' %}active{% endif %}"
+    >
+      <i class="fas fa-chart-line"></i>
+      Reports
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="{% url 'profile' %}" class="user-card">
+      <div class="user-avatar">AM</div>
+      <div class="user-info">
+        <div class="user-name">Omar nasser</div>
+        <div class="user-email">Omar nasser</div>
+      </div>
+      <i
+        class="fas fa-chevron-right"
+        style="color: var(--gray-400); font-size: 0.75rem"
+      ></i>
+    </a>
+  </div>
+</nav>
