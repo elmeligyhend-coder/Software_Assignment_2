@@ -301,9 +301,10 @@
     color: var(--primary);
   }
 </style>
-{% endblock %} {% block content %}
-{% include 'components/navbar.html' %}
+{% endblock %}
 
+{% block content %}
+{% include 'components/navbar.html' %}
 <main class="main-content">
   <div class="page-header">
     <div>
@@ -314,31 +315,31 @@
 
   <div class="profile-header">
     <div class="profile-avatar-large">
-      AM
+      {{ user.first_name|slice:":2"|upper }}
       <div class="avatar-edit-btn">
         <i class="fas fa-camera"></i>
       </div>
     </div>
     <div class="profile-info">
-      <h2>Omar nasser</h2>
-      <p>Omar nasser</p>
+      <h2>{{ user.first_name|default:user.username }}</h2>
+      <p>{{ user.email }}</p>
       <div class="member-since">
         <i class="fas fa-calendar-check"></i>
-        Member since January 2025
+        Member since {{ user.date_joined|date:"F Y" }}
       </div>
-      <div class="profile-stats">
-        <div class="profile-stat">
-          <div class="profile-stat-value">47</div>
-          <div class="profile-stat-label">Transactions</div>
-        </div>
-        <div class="profile-stat">
-          <div class="profile-stat-value">4</div>
-          <div class="profile-stat-label">Active Goals</div>
-        </div>
-        <div class="profile-stat">
-          <div class="profile-stat-value">6</div>
-          <div class="profile-stat-label">Budgets</div>
-        </div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <div class="profile-stat-value">47</div>
+        <div class="profile-stat-label">Transactions</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-value">4</div>
+        <div class="profile-stat-label">Active Goals</div>
+      </div>
+      <div class="profile-stat">
+        <div class="profile-stat-value">6</div>
+        <div class="profile-stat-label">Budgets</div>
       </div>
     </div>
   </div>
@@ -351,25 +352,27 @@
         </div>
         <h3 class="settings-title">Personal Information</h3>
       </div>
-      <form>
+
+      <form method="POST">
+        {% csrf_token %}
         <div class="form-group">
           <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" value="Omar nasser" />
+          <input type="text" name="first_name" class="form-input" value="{{ user.first_name }}" />
         </div>
         <div class="form-group">
           <label class="form-label">Email Address</label>
-          <input type="email" class="form-input" value="Omar nasser" />
+          <input type="email" name="email" class="form-input" value="{{ user.email }}" />
         </div>
         <div class="form-group">
           <label class="form-label">Phone Number</label>
-          <input type="tel" class="form-input" value="+20 123 456 7890" />
+          <input type="tel" name="phone" class="form-input" value="{{ user.profile.phone|default:'' }}" />
         </div>
         <div class="form-group">
           <label class="form-label">Date of Birth</label>
-          <input type="date" class="form-input" value="1995-06-15" />
+          <input type="date" name="dob" class="form-input" value="{{ user.profile.date_of_birth|date:'Y-m-d' }}" />
         </div>
         <div class="btn-group">
-          <button type="button" class="btn btn-primary">Save Changes</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
         </div>
       </form>
     </div>
@@ -419,9 +422,7 @@
           </select>
         </div>
         <div class="btn-group">
-          <button type="button" class="btn btn-primary">
-            Save Preferences
-          </button>
+          <button type="button" class="btn btn-primary">Save Preferences</button>
         </div>
       </form>
     </div>
@@ -446,39 +447,7 @@
       <div class="toggle-group">
         <div>
           <div class="toggle-label">Budget Alerts</div>
-          <div class="toggle-sublabel">
-            Get notified when approaching budget limits
-          </div>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" checked />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="toggle-group">
-        <div>
-          <div class="toggle-label">Goal Reminders</div>
-          <div class="toggle-sublabel">Weekly reminders for savings goals</div>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" checked />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="toggle-group">
-        <div>
-          <div class="toggle-label">Transaction Alerts</div>
-          <div class="toggle-sublabel">Notify for all new transactions</div>
-        </div>
-        <label class="toggle-switch">
-          <input type="checkbox" />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-      <div class="toggle-group">
-        <div>
-          <div class="toggle-label">Weekly Summary</div>
-          <div class="toggle-sublabel">Receive weekly spending summary</div>
+          <div class="toggle-sublabel">Get notified when approaching limits</div>
         </div>
         <label class="toggle-switch">
           <input type="checkbox" checked />
@@ -496,75 +465,27 @@
       </div>
       <form>
         <div class="form-group">
-          <label class="form-label">Current Password</label>
-          <input
-            type="password"
-            class="form-input"
-            placeholder="Enter current password"
-          />
-        </div>
-        <div class="form-group">
           <label class="form-label">New Password</label>
-          <input
-            type="password"
-            class="form-input"
-            placeholder="Enter new password"
-          />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Confirm New Password</label>
-          <input
-            type="password"
-            class="form-input"
-            placeholder="Confirm new password"
-          />
+          <input type="password" class="form-input" placeholder="Enter new password" />
         </div>
         <div class="btn-group">
           <button type="button" class="btn btn-primary">Update Password</button>
         </div>
       </form>
-      <div
-        style="
-          margin-top: 1.5rem;
-          padding-top: 1.5rem;
-          border-top: 1px solid var(--gray-100);
-        "
-      >
-        <div class="toggle-group" style="border: none; padding: 0">
-          <div>
-            <div class="toggle-label">Two-Factor Authentication</div>
-            <div class="toggle-sublabel">Add an extra layer of security</div>
-          </div>
-          <label class="toggle-switch">
-            <input type="checkbox" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
     </div>
 
     <div class="settings-card danger-zone">
       <div class="settings-header">
-        <div
-          class="settings-icon security"
-          style="background: rgba(239, 68, 68, 0.1); color: var(--danger)"
-        >
+        <div class="settings-icon security" style="background: rgba(239, 68, 68, 0.1); color: var(--danger)">
           <i class="fas fa-exclamation-triangle"></i>
         </div>
         <h3 class="settings-title">Danger Zone</h3>
       </div>
-      <p
-        style="
-          color: var(--gray-600);
-          margin-bottom: 1rem;
-          font-size: 0.9375rem;
-        "
-      >
-        Once you delete your account, there is no going back. Please be certain.
+      <p style="color: var(--gray-600); margin-bottom: 1rem; font-size: 0.9375rem;">
+        Once you delete your account, there is no going back.
       </p>
       <button class="btn-danger">
-        <i class="fas fa-trash-alt"></i>
-        Delete Account
+        <i class="fas fa-trash-alt"></i> Delete Account
       </button>
     </div>
   </div>

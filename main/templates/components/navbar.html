@@ -45,16 +45,22 @@
   </div>
 
   <div class="sidebar-footer">
-    <a href="{% url 'profile' %}" class="user-card">
-      <div class="user-avatar">AM</div>
-      <div class="user-info">
-        <div class="user-name">Omar nasser</div>
-        <div class="user-email">Omar nasser</div>
+    <a href="{% url 'profile' %}" class="user-card" style="text-decoration: none; margin-bottom: 10px; display: flex; align-items: center;">
+      <div class="user-avatar" style="background: var(--secondary); color: white;">
+        {{ user.username|slice:":2"|upper }}
       </div>
-      <i
-        class="fas fa-chevron-right"
-        style="color: var(--gray-400); font-size: 0.75rem"
-      ></i>
+      <div class="user-info">
+        <div class="user-name">{{ user.first_name|default:user.username }}</div>
+        <div class="user-email" style="font-size: 0.7rem; color: var(--gray-500);">{{ user.email }}</div>
+      </div>
     </a>
+
+    <form action="{% url 'logout' %}" method="post" style="width: 100%;">
+      {% csrf_token %}
+      <button type="submit" class="nav-item" style="width: 100%; border: none; background: rgba(239, 68, 68, 0.05); color: #ef4444; justify-content: flex-start; cursor: pointer; padding: 0.75rem 1rem; border-radius: var(--radius); font-weight: 600;">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </button>
+    </form>
   </div>
 </nav>

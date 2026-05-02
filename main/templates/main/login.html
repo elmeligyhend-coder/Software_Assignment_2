@@ -8,6 +8,13 @@
       <div class="logo-text login">Budget<span>Wise</span></div>
     </div>
 
+    {% if messages %}
+    {% for message in messages %}
+        <div style="padding: 10px; background-color: #fee2e2; color: #b91c1c; border-radius: 8px; margin-bottom: 1rem; text-align: center; font-size: 0.875rem;">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% endif %}
     <h1 class="auth-title">Welcome Back</h1>
     <p class="auth-subtitle">Sign in to manage your finances smartly</p>
 

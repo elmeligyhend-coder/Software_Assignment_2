@@ -440,7 +440,7 @@
 <main class="main-content">
   <div class="dashboard-header">
     <div class="welcome-section">
-      <h1>Welcome back, Omar! 👋</h1>
+      <h1>Welcome back, {{ user.first_name|default:user.username }}! 👋</h1>
       <p>Here's your financial overview for April 2026</p>
     </div>
     <div class="quick-actions">
