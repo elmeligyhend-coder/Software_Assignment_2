@@ -13,4 +13,8 @@ urlpatterns = [
     path("reports/",views.reports_view,name="reports"),
     path("profile/",views.profile,name="profile"),
     path('logout/', views.logout_view, name='logout'),
+    path('api/budgets/', views.BudgetController.as_view(), name='budgets'),
+    path('api/budgets/<int:budget_id>/', views.BudgetController.as_view(), name='budget_detail'),
+    path('api/goals/', views.GoalController.as_view(), name='goals'),
+    path('api/goals/<int:goal_id>/progress/', views.GoalProgressController.as_view(), name='goal_progress'),
 ]
