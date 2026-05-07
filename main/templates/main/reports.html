@@ -6,33 +6,7 @@
     align-items: center;
     margin-bottom: 2rem;
   }
-
-  .date-range-picker {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: white;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .date-range-picker input {
-    border: none;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--dark);
-    background: transparent;
-  }
-
-  .date-range-picker input:focus {
-    outline: none;
-  }
-
-  .date-range-picker span {
-    color: var(--gray-400);
-  }
-
+  
   .chart-card {
     background: white;
     border-radius: var(--radius-xl);
@@ -366,53 +340,17 @@
 {% include 'components/navbar.html' %}
 
 <main class="main-content">
-  <div class="report-header">
+  <form method="post">
+    {% csrf_token %}
+    <div class="report-header">
     <div>
       <h1 class="page-title">Financial Reports</h1>
       <p class="page-subtitle">
         Analyze your spending patterns and financial health
       </p>
     </div>
-    <div class="date-range-picker">
-      <input type="date" value="2026-04-01" />
-      <span>to</span>
-      <input type="date" value="2026-04-29" />
-      <button class="btn btn-secondary" style="padding: 0.5rem 1rem">
-        <i class="fas fa-calendar"></i>
-      </button>
-    </div>
   </div>
 
-  <div class="summary-stats">
-    <div class="summary-stat income">
-      <div class="summary-stat-icon">
-        <i class="fas fa-arrow-up"></i>
-      </div>
-      <div class="summary-stat-value">$12,450</div>
-      <div class="summary-stat-label">Total Income</div>
-    </div>
-    <div class="summary-stat expense">
-      <div class="summary-stat-icon">
-        <i class="fas fa-arrow-down"></i>
-      </div>
-      <div class="summary-stat-value">$7,832</div>
-      <div class="summary-stat-label">Total Expenses</div>
-    </div>
-    <div class="summary-stat savings">
-      <div class="summary-stat-icon">
-        <i class="fas fa-piggy-bank"></i>
-      </div>
-      <div class="summary-stat-value">$4,618</div>
-      <div class="summary-stat-label">Net Savings</div>
-    </div>
-    <div class="summary-stat transactions">
-      <div class="summary-stat-icon">
-        <i class="fas fa-exchange-alt"></i>
-      </div>
-      <div class="summary-stat-value">47</div>
-      <div class="summary-stat-label">Transactions</div>
-    </div>
-  </div>
 
   <div class="grid-2" style="margin-bottom: 2rem">
     <div class="chart-card">
@@ -420,55 +358,27 @@
         <h3 class="chart-title">Expense Breakdown</h3>
       </div>
       <div class="pie-chart-container">
-        <div class="pie-chart" style="position: relative">
-          <div class="pie-chart-center">
-            <div class="amount">$7,832</div>
-            <div class="label">Total</div>
+        <div style="width:220px; position: relative;">
+          <canvas id="expensePieChart" width="220" height="220"></canvas>
+          <div style="text-align:center; margin-top:8px">
+            <div class="pie-chart-center">
+              <div class="amount">${{ total_expenses }}</div>
+              <div class="label">Total Expenses</div>
+            </div>
           </div>
         </div>
         <div class="pie-legend">
+          {% for row in expense_rows %}
           <div class="pie-legend-item">
             <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #ef4444"></div>
-              <span class="pie-legend-name">Food & Dining</span>
+              <div class="pie-legend-color" style="background: {{ row.color }}"></div>
+              <span class="pie-legend-name">{{ row.category }}</span>
             </div>
-            <span class="pie-legend-percent">30% ($2,349)</span>
+            <span class="pie-legend-percent">{{ row.percent }}% (${{ row.total }})</span>
           </div>
-          <div class="pie-legend-item">
-            <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #f59e0b"></div>
-              <span class="pie-legend-name">Transportation</span>
-            </div>
-            <span class="pie-legend-percent">20% ($1,566)</span>
-          </div>
-          <div class="pie-legend-item">
-            <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #6366f1"></div>
-              <span class="pie-legend-name">Entertainment</span>
-            </div>
-            <span class="pie-legend-percent">15% ($1,175)</span>
-          </div>
-          <div class="pie-legend-item">
-            <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #10b981"></div>
-              <span class="pie-legend-name">Shopping</span>
-            </div>
-            <span class="pie-legend-percent">15% ($1,175)</span>
-          </div>
-          <div class="pie-legend-item">
-            <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #8b5cf6"></div>
-              <span class="pie-legend-name">Bills & Utilities</span>
-            </div>
-            <span class="pie-legend-percent">12% ($940)</span>
-          </div>
-          <div class="pie-legend-item">
-            <div class="pie-legend-left">
-              <div class="pie-legend-color" style="background: #ec4899"></div>
-              <span class="pie-legend-name">Other</span>
-            </div>
-            <span class="pie-legend-percent">8% ($627)</span>
-          </div>
+          {% empty %}
+          <div class="small">No expense data for this period.</div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -487,35 +397,8 @@
           </div>
         </div>
       </div>
-      <div class="bar-chart">
-        <div class="bar-group">
-          <div class="bar-wrapper">
-            <div class="bar income" style="height: 140px"></div>
-            <div class="bar expense" style="height: 90px"></div>
-          </div>
-          <span class="bar-label">Week 1</span>
-        </div>
-        <div class="bar-group">
-          <div class="bar-wrapper">
-            <div class="bar income" style="height: 160px"></div>
-            <div class="bar expense" style="height: 110px"></div>
-          </div>
-          <span class="bar-label">Week 2</span>
-        </div>
-        <div class="bar-group">
-          <div class="bar-wrapper">
-            <div class="bar income" style="height: 180px"></div>
-            <div class="bar expense" style="height: 130px"></div>
-          </div>
-          <span class="bar-label">Week 3</span>
-        </div>
-        <div class="bar-group">
-          <div class="bar-wrapper">
-            <div class="bar income" style="height: 150px"></div>
-            <div class="bar expense" style="height: 100px"></div>
-          </div>
-          <span class="bar-label">Week 4</span>
-        </div>
+      <div style="height: 260px;">
+        <canvas id="incomeExpenseBarChart"></canvas>
       </div>
     </div>
   </div>
@@ -525,70 +408,110 @@
       <h3 class="chart-title">Key Insights</h3>
     </div>
     <div class="insights-grid">
+      {% for insight in insights %}
       <div class="insight-card">
-        <div class="insight-icon warning">
-          <i class="fas fa-exclamation-triangle"></i>
+        <div class="insight-icon {{ insight.severity }}">
+          {% if insight.severity == 'warning' %}
+            <i class="fas fa-exclamation-triangle"></i>
+          {% elif insight.severity == 'success' %}
+            <i class="fas fa-check-circle"></i>
+          {% elif insight.severity == 'info' %}
+            <i class="fas fa-chart-line"></i>
+          {% else %}
+            <i class="fas fa-exclamation-circle"></i>
+          {% endif %}
         </div>
         <div class="insight-content">
-          <h4>High Food Spending</h4>
-          <p>
-            Your food & dining expenses are 15% above average. Consider cooking
-            more meals at home to save money.
-          </p>
+          <h4>{{ insight.title }}</h4>
+          <p>{{ insight.text }}</p>
         </div>
       </div>
-      <div class="insight-card">
-        <div class="insight-icon success">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="insight-content">
-          <h4>Great Savings Rate!</h4>
-          <p>
-            You're saving 37% of your income this month, which is above the
-            recommended 20% benchmark.
-          </p>
-        </div>
-      </div>
-      <div class="insight-card">
-        <div class="insight-icon info">
-          <i class="fas fa-chart-line"></i>
-        </div>
-        <div class="insight-content">
-          <h4>Income Increased</h4>
-          <p>
-            Your income this month is 12% higher than last month. Keep up the
-            good work!
-          </p>
-        </div>
-      </div>
-      <div class="insight-card">
-        <div class="insight-icon danger">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <div class="insight-content">
-          <h4>Budget Alert</h4>
-          <p>
-            You've exceeded your entertainment budget by $30. Review your
-            spending in this category.
-          </p>
-        </div>
-      </div>
+      {% empty %}
+      <div class="small">No insights for this period.</div>
+      {% endfor %}
     </div>
   </div>
 
   <div class="export-section">
-    <button class="btn btn-secondary">
+    <button type="submit" name="export_pdf" class="btn btn-secondary">
       <i class="fas fa-file-pdf"></i>
       Export PDF
     </button>
-    <button class="btn btn-secondary">
-      <i class="fas fa-file-csv"></i>
-      Export CSV
-    </button>
-    <button class="btn btn-primary">
-      <i class="fas fa-file-excel"></i>
-      Export Excel
-    </button>
+  </div>
+  </form>
+
+  <div style="margin-top: 1.5rem">
+    <div class="summary-stats">
+      <div class="summary-stat income">
+        <div class="summary-stat-icon">
+          <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="summary-stat-value">${{ total_income }}</div>
+        <div class="summary-stat-label">Total Income</div>
+      </div>
+      <div class="summary-stat expense">
+        <div class="summary-stat-icon">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="summary-stat-value">${{ total_expenses }}</div>
+        <div class="summary-stat-label">Total Expenses</div>
+      </div>
+      <div class="summary-stat savings">
+        <div class="summary-stat-icon">
+          <i class="fas fa-piggy-bank"></i>
+        </div>
+        <div class="summary-stat-value">${{ goals_total_saved }}</div>
+        <div class="summary-stat-label">Total Saved (Goals)</div>
+      </div>
+      <div class="summary-stat transactions">
+        <div class="summary-stat-icon">
+          <i class="fas fa-exchange-alt"></i>
+        </div>
+        <div class="summary-stat-value">{{ transactions.count }}</div>
+        <div class="summary-stat-label">Transactions</div>
+      </div>
+    </div>
+  </div>
   </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  (function(){
+    try{
+      const expenseLabels = {{ expense_labels_json|safe }} || [];
+      const expenseValues = {{ expense_values_json|safe }} || [];
+      const colors = {{ colors_json|safe }} || [];
+
+      const pie = document.getElementById('expensePieChart');
+      if(pie){
+        new Chart(pie.getContext('2d'), {
+          type: 'pie',
+          data: {
+            labels: expenseLabels,
+            datasets: [{ data: expenseValues, backgroundColor: colors }]
+          },
+          options: { plugins: { legend: { display: false } }, responsive: true }
+        });
+      }
+
+      const weekLabels = {{ week_labels_json|safe }} || [];
+      const incomeByWeek = {{ income_by_week_json|safe }} || [];
+      const expenseByWeek = {{ expense_by_week_json|safe }} || [];
+      const bar = document.getElementById('incomeExpenseBarChart');
+      if(bar){
+        new Chart(bar.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: weekLabels,
+            datasets: [
+              { label: 'Income', data: incomeByWeek, backgroundColor: '#10b981' },
+              { label: 'Expenses', data: expenseByWeek, backgroundColor: '#ef4444' }
+            ]
+          },
+          options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+      }
+    }catch(e){ console.error(e) }
+  })();
+</script>
 {% endblock %}

@@ -379,258 +379,127 @@
       <p>Manage your monthly spending limits</p>
     </div>
     <div class="month-selector">
-      <button class="month-btn">
-        <i class="fas fa-chevron-left"></i>
-      </button>
-      <span class="month-display">April 2026</span>
-      <button class="month-btn">
-        <i class="fas fa-chevron-right"></i>
-      </button>
+      <button class="month-btn"><i class="fas fa-chevron-left"></i></button>
+      <span class="month-display">{{ current_month|date:"F Y" }}</span>
+      <button class="month-btn"><i class="fas fa-chevron-right"></i></button>
     </div>
   </div>
 
   <div class="budget-summary">
     <div class="summary-card">
-      <div class="summary-card-header">
-        <div class="summary-icon total">
-          <i class="fas fa-wallet"></i>
-        </div>
-      </div>
-      <div class="summary-value">$2,400</div>
-      <div class="summary-label">Total Budget</div>
+      <div class="summary-icon total"><i class="fas fa-wallet"></i></div>
+      <div class="summary-value">${{ total_budget_limit }}</div>
+      <div class="summary-label">Total Budgeted</div>
     </div>
-
     <div class="summary-card">
-      <div class="summary-card-header">
-        <div class="summary-icon spent">
-          <i class="fas fa-arrow-down"></i>
-        </div>
-      </div>
-      <div class="summary-value">$1,530</div>
+      <div class="summary-icon spent"><i class="fas fa-arrow-down"></i></div>
+      <div class="summary-value">${{ total_actual_spent }}</div>
       <div class="summary-label">Total Spent</div>
     </div>
-
     <div class="summary-card">
-      <div class="summary-card-header">
-        <div class="summary-icon remaining">
-          <i class="fas fa-piggy-bank"></i>
-        </div>
-      </div>
-      <div class="summary-value">$870</div>
+      <div class="summary-icon remaining"><i class="fas fa-piggy-bank"></i></div>
+      <div class="summary-value">${{ total_remaining }}</div>
       <div class="summary-label">Remaining</div>
     </div>
-
     <div class="summary-card">
-      <div class="summary-card-header">
-        <div class="summary-icon over">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-      </div>
-      <div class="summary-value">1</div>
+      <div class="summary-icon over"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="summary-value">{{ over_budget_count }}</div>
       <div class="summary-label">Over Budget</div>
     </div>
   </div>
 
   <div class="budget-grid">
+    {% for item in budget_data %}
     <div class="budget-card">
       <div class="budget-header">
         <div class="budget-category">
-          <div class="budget-icon food">
-            <i class="fas fa-utensils"></i>
+          <div class="budget-icon {{ item.budget.category|lower }}">
+            <i class="fas 
+              {% if 'Food' in item.budget.category %}fa-utensils
+              {% elif 'Transport' in item.budget.category %}fa-bus
+              {% elif 'Bill' in item.budget.category %}fa-bolt
+              {% elif 'Shopping' in item.budget.category %}fa-shopping-bag
+              {% else %}fa-wallet{% endif %}"></i>
           </div>
           <div class="budget-info">
-            <h3>Food & Dining</h3>
-            <p>Groceries, restaurants, delivery</p>
+            <h3>{{ item.budget.category }}</h3>
+            <p>Limit for this month</p>
           </div>
         </div>
-        <span class="budget-status warning">75% Used</span>
+        <span class="budget-status {% if item.is_exceeded %}over{% elif item.progress > 80 %}warning{% else %}on-track{% endif %}">
+          {{ item.progress|floatformat:0 }}% Used
+        </span>
       </div>
+
       <div class="budget-amounts">
-        <span class="spent">$450</span>
-        <span class="total">/ $600</span>
+        <span class="spent">${{ item.actual_spent }}</span>
+        <span class="total">/ ${{ item.budget.amount_limit }}</span>
       </div>
+
       <div class="budget-progress">
-        <div class="budget-progress-fill yellow" style="width: 75%"></div>
+        <div class="budget-progress-fill {% if item.is_exceeded %}red{% elif item.progress > 80 %}yellow{% else %}green{% endif %}" 
+             style="width: {{ item.progress }}%"></div>
       </div>
+
       <div class="budget-footer">
-        <div class="budget-remaining positive">
-          <span class="amount">$150</span> remaining
+        <div class="budget-remaining {% if item.is_exceeded %}negative{% else %}positive{% endif %}">
+          {% if item.is_exceeded %}
+            <span class="amount">-${{ item.over_by }}</span> over budget
+          {% else %}
+            <span class="amount">${{ item.remaining }}</span> remaining
+          {% endif %}
         </div>
         <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
+          <button class="budget-btn edit" 
+                onclick="openEditModal('{{ item.budget.category }}', '{{ item.budget.amount_limit }}')">
+              <i class="fas fa-edit"></i>
           </button>
         </div>
       </div>
     </div>
+    {% endfor %}
 
-    <div class="budget-card">
-      <div class="budget-header">
-        <div class="budget-category">
-          <div class="budget-icon transport">
-            <i class="fas fa-bus"></i>
-          </div>
-          <div class="budget-info">
-            <h3>Transportation</h3>
-            <p>Gas, public transit, rideshare</p>
-          </div>
-        </div>
-        <span class="budget-status on-track">75% Used</span>
-      </div>
-      <div class="budget-amounts">
-        <span class="spent">$150</span>
-        <span class="total">/ $200</span>
-      </div>
-      <div class="budget-progress">
-        <div class="budget-progress-fill green" style="width: 75%"></div>
-      </div>
-      <div class="budget-footer">
-        <div class="budget-remaining positive">
-          <span class="amount">$50</span> remaining
-        </div>
-        <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="budget-card">
-      <div class="budget-header">
-        <div class="budget-category">
-          <div class="budget-icon entertainment">
-            <i class="fas fa-film"></i>
-          </div>
-          <div class="budget-info">
-            <h3>Entertainment</h3>
-            <p>Movies, games, streaming</p>
-          </div>
-        </div>
-        <span class="budget-status over">130% Used</span>
-      </div>
-      <div class="budget-amounts">
-        <span class="spent">$130</span>
-        <span class="total">/ $100</span>
-      </div>
-      <div class="budget-progress">
-        <div class="budget-progress-fill red" style="width: 100%"></div>
-      </div>
-      <div class="budget-footer">
-        <div class="budget-remaining negative">
-          <span class="amount">-$30</span> over budget
-        </div>
-        <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="budget-card">
-      <div class="budget-header">
-        <div class="budget-category">
-          <div class="budget-icon shopping">
-            <i class="fas fa-shopping-bag"></i>
-          </div>
-          <div class="budget-info">
-            <h3>Shopping</h3>
-            <p>Clothes, electronics, accessories</p>
-          </div>
-        </div>
-        <span class="budget-status on-track">67% Used</span>
-      </div>
-      <div class="budget-amounts">
-        <span class="spent">$200</span>
-        <span class="total">/ $300</span>
-      </div>
-      <div class="budget-progress">
-        <div class="budget-progress-fill green" style="width: 67%"></div>
-      </div>
-      <div class="budget-footer">
-        <div class="budget-remaining positive">
-          <span class="amount">$100</span> remaining
-        </div>
-        <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="budget-card">
-      <div class="budget-header">
-        <div class="budget-category">
-          <div class="budget-icon bills">
-            <i class="fas fa-bolt"></i>
-          </div>
-          <div class="budget-info">
-            <h3>Bills & Utilities</h3>
-            <p>Electricity, water, internet</p>
-          </div>
-        </div>
-        <span class="budget-status on-track">58% Used</span>
-      </div>
-      <div class="budget-amounts">
-        <span class="spent">$350</span>
-        <span class="total">/ $600</span>
-      </div>
-      <div class="budget-progress">
-        <div class="budget-progress-fill green" style="width: 58%"></div>
-      </div>
-      <div class="budget-footer">
-        <div class="budget-remaining positive">
-          <span class="amount">$250</span> remaining
-        </div>
-        <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="budget-card">
-      <div class="budget-header">
-        <div class="budget-category">
-          <div class="budget-icon health">
-            <i class="fas fa-heartbeat"></i>
-          </div>
-          <div class="budget-info">
-            <h3>Health & Fitness</h3>
-            <p>Gym, medical, pharmacy</p>
-          </div>
-        </div>
-        <span class="budget-status on-track">42% Used</span>
-      </div>
-      <div class="budget-amounts">
-        <span class="spent">$250</span>
-        <span class="total">/ $600</span>
-      </div>
-      <div class="budget-progress">
-        <div class="budget-progress-fill green" style="width: 42%"></div>
-      </div>
-      <div class="budget-footer">
-        <div class="budget-remaining positive">
-          <span class="amount">$350</span> remaining
-        </div>
-        <div class="budget-actions">
-          <button class="budget-btn edit">
-            <i class="fas fa-edit"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="add-budget-card">
-      <div class="add-icon">
-        <i class="fas fa-plus"></i>
-      </div>
+    <div class="add-budget-card" onclick="document.getElementById('budgetModal').style.display='block'">
+      <div class="add-icon"><i class="fas fa-plus"></i></div>
       <h3>Add New Budget</h3>
-      <p>Create a new budget category</p>
+      <p>Set a new limit</p>
     </div>
   </div>
 </main>
+
+<div id="budgetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+  <div style="background:white; width:400px; margin:100px auto; padding:2rem; border-radius:15px;">
+    <h3>Add/Update Budget</h3>
+    <form method="POST">
+      {% csrf_token %}
+      <div style="margin:1rem 0;">
+        <label>Category:</label>
+        <select name="category" class="form-control" style="width:100%; padding:0.5rem;">
+          <option value="Food">Food</option>
+          <option value="Transportation">Transportation</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Bills">Bills</option>
+          <option value="Entertainment">Entertainment</option>
+        </select>
+      </div>
+      <div style="margin:1rem 0;">
+        <label>Amount Limit:</label>
+        <input type="number" name="amount_limit" step="0.01" class="form-control" style="width:100%; padding:0.5rem;" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; background:var(--primary); color:white; border:none; border-radius:8px;">Save Budget</button>
+      <button type="button" onclick="this.parentElement.parentElement.parentElement.style.display='none'" style="width:100%; margin-top:0.5rem; background:none; border:none; color:gray;">Cancel</button>
+    </form>
+  </div>
+</div>
+<script>
+function openEditModal(category, amount) {
+    const modal = document.getElementById('budgetModal');
+    const categorySelect = modal.querySelector('select[name="category"]');
+    const amountInput = modal.querySelector('input[name="amount_limit"]');
+    
+    categorySelect.value = category;
+    amountInput.value = amount;
+    modal.style.display = 'block';
+}
+</script>
 {% endblock %}

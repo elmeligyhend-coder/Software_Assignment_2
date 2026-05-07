@@ -8,6 +8,21 @@
       <div class="logo-text sign-up">Budget<span>Wise</span></div>
     </div>
 
+    {% if messages %} {% for message in messages %}
+    <div
+      style="
+        padding: 10px;
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+      "
+    >
+      {{ message }}
+    </div>
+    {% endfor %} {% endif %}
     <h1 class="auth-title">Create Account</h1>
     <p class="auth-subtitle">Start your journey to financial freedom</p>
 
@@ -21,19 +36,17 @@
           name="name"
           class="form-input"
           placeholder="Enter your full name"
-          required
         />
       </div>
 
       <div class="form-group">
         <label class="form-label" for="email">Email Address</label>
         <input
-          type="email"
+          type="text"
           id="email"
           name="email"
           class="form-input"
           placeholder="Enter your email"
-          required
         />
       </div>
 
@@ -45,7 +58,6 @@
           name="password"
           class="form-input"
           placeholder="Create a strong password"
-          required
         />
         <p
           style="font-size: 0.75rem; color: var(--gray-500); margin-top: 0.5rem"
@@ -65,7 +77,6 @@
           name="confirm_password"
           class="form-input"
           placeholder="Confirm your password"
-          required
         />
       </div>
 
@@ -85,7 +96,8 @@
             accent-color: var(--primary);
             margin-top: 2px;
           "
-          required
+          id="terms_of_service"
+          name="terms_of_service"
         />
         <span style="font-size: 0.8125rem; color: var(--gray-600)">
           I agree to the
