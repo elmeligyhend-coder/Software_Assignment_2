@@ -378,8 +378,43 @@
     align-items: center;
     gap: 0.5rem;
   }
+  .hidden {
+    display: none;
+  }
 </style>
-{% endblock %} {% block content %} {% include 'components/navbar.html' %}
+{% endblock %} {% block content %} {% include 'components/navbar.html' %} {% if
+messages %}
+<div
+  id="django-messages"
+  style="position: fixed; top: 1rem; right: 1rem; z-index: 1200"
+>
+  {% for message in messages %}
+  <div
+    class="django-message {{ message.tags }}"
+    style="
+      margin-bottom: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    "
+  >
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const msgs = document.querySelectorAll("#django-messages .django-message");
+    let errors = [];
+    msgs.forEach((m) => {
+      const classes = m.className || "";
+      if (classes.indexOf("error") !== -1) {
+        errors.push(m.textContent.trim());
+      }
+    });
+  });
+</script>
 
 <main class="main-content">
   <div class="transactions-header">
@@ -394,145 +429,381 @@
 
   <div class="summary-cards">
     <div class="summary-card">
-        <div class="summary-icon income"><i class="fas fa-arrow-up"></i></div>
-        <div class="summary-content">
-            <h3>${{ total_income }}</h3>
-            <p>Total Income</p>
-        </div>
+      <div class="summary-icon income"><i class="fas fa-arrow-up"></i></div>
+      <div class="summary-content">
+        <h3>${{ total_income }}</h3>
+        <p>Total Income</p>
+      </div>
     </div>
     <div class="summary-card">
-        <div class="summary-icon expense"><i class="fas fa-arrow-down"></i></div>
-        <div class="summary-content">
-            <h3>${{ total_expenses }}</h3>
-            <p>Total Expenses</p>
-        </div>
+      <div class="summary-icon expense"><i class="fas fa-arrow-down"></i></div>
+      <div class="summary-content">
+        <h3>${{ total_expenses }}</h3>
+        <p>Total Expenses</p>
+      </div>
     </div>
     <div class="summary-card">
-        <div class="summary-icon count"><i class="fas fa-list"></i></div>
-        <div class="summary-content">
-            <h3>{{ transactions.count }}</h3>
-            <p>Total Transactions</p>
-        </div>
+      <div class="summary-icon count"><i class="fas fa-list"></i></div>
+      <div class="summary-content">
+        <h3>{{ transactions.count }}</h3>
+        <p>Total Transactions</p>
+      </div>
     </div>
   </div>
 
   <div class="filters-bar">
     <div class="filter-group">
-        <a href="?type=all" class="filter-btn {% if current_filter == 'all' %}active{% endif %}">All</a>
-        <a href="?type=income" class="filter-btn {% if current_filter == 'income' %}active{% endif %}">Income</a>
-        <a href="?type=expense" class="filter-btn {% if current_filter == 'expense' %}active{% endif %}">Expense</a>
-        <a href="?type=week" class="filter-btn {% if current_filter == 'week' %}active{% endif %}">This Week</a>
-        <a href="?type=month" class="filter-btn {% if current_filter == 'month' %}active{% endif %}">This Month</a>
+      <a
+        href="?type=all"
+        class="filter-btn {% if current_filter == 'all' %}active{% endif %}"
+        >All</a
+      >
+      <a
+        href="?type=income"
+        class="filter-btn {% if current_filter == 'income' %}active{% endif %}"
+        >Income</a
+      >
+      <a
+        href="?type=expense"
+        class="filter-btn {% if current_filter == 'expense' %}active{% endif %}"
+        >Expense</a
+      >
+      <a
+        href="?type=week"
+        class="filter-btn {% if current_filter == 'week' %}active{% endif %}"
+        >This Week</a
+      >
+      <a
+        href="?type=month"
+        class="filter-btn {% if current_filter == 'month' %}active{% endif %}"
+        >This Month</a
+      >
     </div>
-    
-    <form method="GET" action="{% url 'transactions' %}" class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" name="search" placeholder="Search transactions..." value="{{ request.GET.search }}">
-        <button type="submit" style="display: none;">Search</button>
+
+    <form
+      method="GET"
+      action="{% url 'transactions' %}"
+      class="search-box"
+      id="searchForm"
+    >
+      <i class="fas fa-search"></i>
+      <input
+        id="searchInput"
+        type="text"
+        name="search"
+        placeholder="Search transactions..."
+        value="{{ request.GET.search }}"
+      />
+      <button type="submit" style="display: none">Search</button>
     </form>
-  </div> <div class="transactions-table">
+  </div>
+  <div class="transactions-table">
     <div class="table-header">
-        <span>Transaction</span>
-        <span>Category</span>
-        <span>Date</span>
-        <span>Amount</span>
-        <span>Actions</span>
+      <span>Transaction</span>
+      <span>Category</span>
+      <span>Date</span>
+      <span>Amount</span>
+      <span>Actions</span>
     </div>
 
     {% for transaction in transactions %}
     <div class="transaction-row">
-        <div class="transaction-info">
-            <div class="transaction-icon {{ transaction.category|lower }}">
-              <i class="fas 
-                  {% if transaction.category == 'Food' %}fa-utensils
-                  {% elif transaction.category == 'Transport' %}fa-car
-                  {% elif transaction.category == 'Shopping' %}fa-shopping-bag
-                  {% elif transaction.category == 'Bills' %}fa-file-invoice-dollar
-                  {% elif transaction.category == 'Income' %}fa-wallet
-                  {% else %}fa-money-bill{% endif %}">
-              </i>
-          </div>
-            <div class="transaction-details">
-                <h4>{{ transaction.description|default:"No Description" }}</h4>
-                <p>{{ transaction.category }}</p>
-            </div>
+      <div class="transaction-info">
+        <div class="transaction-icon {{ transaction.category|lower }}">
+          <i
+            class="fas {% if transaction.category == 'Food' %}fa-utensils {% elif transaction.category == 'Transport' %}fa-car {% elif transaction.category == 'Shopping' %}fa-shopping-bag {% elif transaction.category == 'Bills' %}fa-file-invoice-dollar {% elif transaction.category == 'Income' %}fa-wallet {% else %}fa-money-bill{% endif %}"
+          >
+          </i>
         </div>
-        <div class="transaction-category">
-            <span class="category-badge {{ transaction.type }}">
-                {{ transaction.category }}
-            </span>
+        <div class="transaction-details">
+          <h4>{{ transaction.name }}</h4>
+          <p>{{ transaction.category }}</p>
         </div>
-        <div class="transaction-date">{{ transaction.date|date:"M d, Y" }}</div>
-        <div class="transaction-amount {{ transaction.type }}">
-            {% if transaction.type == 'income' %}+{% else %}-{% endif %}${{ transaction.amount }}
-        </div>
-        <div class="transaction-actions">
-            <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-            <a href="{% url 'delete_transaction' transaction.id %}" class="action-btn delete" onclick="return confirm('Are you sure?')">
-                <i class="fas fa-trash"></i>
-            </a>
-        </div>
+      </div>
+      <div class="transaction-category">
+        <span class="category-badge {{ transaction.type }}">
+          {{ transaction.category }}
+        </span>
+      </div>
+      <div class="transaction-date">{{ transaction.date|date:"M d, Y" }}</div>
+      <div class="transaction-amount {{ transaction.type }}">
+        {% if transaction.type == 'income' %}+{% else %}-{% endif %}
+        ${{transaction.amount }}
+      </div>
+      <div class="transaction-actions">
+        <button
+          class="action-btn edit-btn"
+          title="Edit"
+          data-id="{{ transaction.id }}"
+          data-name="{{ transaction.name|default:'' }}"
+          data-amount="{{ transaction.amount }}"
+          data-category="{{ transaction.category }}"
+          data-description="{{ transaction.description|default:'' }}"
+          data-note="{{ transaction.note|default:'' }}"
+          data-type="{{ transaction.type }}"
+          data-date="{{ transaction.date|date:'Y-m-d\TH:i' }}"
+        >
+          <i class="fas fa-edit"></i>
+        </button>
+        <a
+          href="{% url 'delete_transaction' transaction.id %}"
+          class="action-btn delete"
+          onclick="return confirm('Are you sure?');"
+        >
+          <i class="fas fa-trash"></i>
+        </a>
+      </div>
+    </div>
+    <div class="transaction-extra-details hidden" style="padding-inline: 20px">
+      <p>
+        <strong>Description: </strong> {% if transaction.description %}
+        {{transaction.description }}{%else%}No description provided{% endif %}
+      </p>
+      <p>
+        <strong>Note: </strong> {% if transaction.note %}{{ transaction.note
+        }}{%else%}No note provided{% endif %}
+      </p>
     </div>
     {% empty %}
-    <div class="transaction-row" style="justify-content: center; padding: 2rem; color: var(--gray-500);">
-        No transactions found.
+    <div style="text-align: center; padding-block: 24px">
+      No transactions yet.
     </div>
     {% endfor %}
 
     <div class="pagination">
-        <div class="pagination-info">
-            Showing <b>{{ transactions.count }}</b> results
-        </div>
+      <div class="pagination-info">
+        Showing <b>{{ transactions.count }}</b> results
+      </div>
     </div>
   </div>
 </main>
-<div id="transactionModal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
-    <div style="background:white; margin:10% auto; padding:2rem; width:400px; border-radius:15px; box-shadow: var(--shadow-lg);">
-        <h2 style="margin-bottom:1.5rem;">Add New Transaction</h2>
-        
-        <form method="POST" action="{% url 'transactions' %}"> {% csrf_token %}
-            
-            <div style="margin-bottom:1rem;">
-                <label>Amount</label>
-                <input type="number" name="amount" step="0.01" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:5px;">
-            </div>
+<div
+  id="transactionModal"
+  style="
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  "
+>
+  <div
+    style="
+      background: white;
+      margin: 5% auto;
+      padding: 2rem;
+      width: 420px;
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+    "
+  >
+    <h2 style="margin-bottom: 1.5rem">Add / Edit Transaction</h2>
 
-            <div style="margin-bottom:1rem;">
-                <label>Category</label>
-                <select name="category" required style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:5px;">
-                    <option value="Food">Food</option>
-                    <option value="Transport">Transport</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Bills">Bills</option>
-                    <option value="Income">Income</option>
-                </select>
-            </div>
+    <form method="POST" action="{% url 'transactions' %}" id="transactionForm">
+      {% csrf_token %}
+      <input type="hidden" name="edit_id" id="edit_id" />
 
-            <div style="margin-bottom:1rem;">
-                <label>Description</label>
-                <textarea name="description" style="width:100%; padding:0.5rem; border:1px solid #ddd; border-radius:5px;"></textarea>
-            </div>
+      <div style="margin-bottom: 1rem">
+        <label>Name</label>
+        <input
+          type="text"
+          name="name"
+          id="tx_name"
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        />
+      </div>
 
-            <div style="display:flex; gap:1rem;">
-                <button type="submit" class="btn btn-primary" style="flex:1;">Save</button>
-                <button type="button" onclick="closeModal()" class="btn" style="flex:1; background:#eee;">Cancel</button>
-            </div>
-        </form>
-    </div>
+      <div style="margin-bottom: 1rem">
+        <label>Amount</label>
+        <input
+          type="number"
+          name="amount"
+          id="tx_amount"
+          step="0.01"
+          required
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        />
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <label>Type</label>
+        <select
+          name="transaction_type"
+          id="tx_type"
+          required
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        >
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <label>Category</label>
+        <select
+          name="category"
+          id="tx_category"
+          required
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        >
+          <option value="Food">Food</option>
+          <option value="Transport">Transport</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Bills">Bills</option>
+          <option value="Income">Income</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <label>Description</label>
+        <textarea
+          name="description"
+          id="tx_description"
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        ></textarea>
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <label>Note</label>
+        <textarea
+          name="note"
+          id="tx_note"
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        ></textarea>
+      </div>
+
+      <div style="margin-bottom: 1rem">
+        <label>Date</label>
+        <input
+          type="datetime-local"
+          name="date"
+          id="tx_date"
+          style="
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          "
+        />
+      </div>
+
+      <div style="display: flex; gap: 1rem">
+        <button type="submit" class="btn btn-primary" style="flex: 1">
+          Save
+        </button>
+        <button
+          type="button"
+          onclick="closeModal()"
+          class="btn"
+          style="flex: 1; background: #eee"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
-function openModal() {
-    document.getElementById('transactionModal').style.display = 'block';
-}
-function closeModal() {
-    document.getElementById('transactionModal').style.display = 'none';
-}
-window.onclick = function(event) {
-    let modal = document.getElementById('transactionModal');
+  function openModal() {
+    document.getElementById("transactionModal").style.display = "block";
+  }
+  function closeModal() {
+    document.getElementById("transactionModal").style.display = "none";
+    document.getElementById("transactionForm").reset();
+    document.getElementById("edit_id").value = "";
+  }
+  window.onclick = function (event) {
+    let modal = document.getElementById("transactionModal");
     if (event.target == modal) {
-        modal.style.display = "none";
+      modal.style.display = "none";
     }
-}
+  };
+
+  document.querySelectorAll(".edit-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const id = btn.dataset.id;
+      document.getElementById("edit_id").value = id;
+      document.getElementById("tx_name").value = btn.dataset.name || "";
+      document.getElementById("tx_amount").value = btn.dataset.amount || "";
+      document.getElementById("tx_category").value =
+        btn.dataset.category || "Other";
+      document.getElementById("tx_description").value =
+        btn.dataset.description || "";
+      document.getElementById("tx_note").value = btn.dataset.note || "";
+      if (btn.dataset.type) {
+        document.getElementById("tx_type").value = btn.dataset.type;
+      }
+      if (btn.dataset.date) {
+        document.getElementById("tx_date").value = btn.dataset.date;
+      }
+      openModal();
+    });
+  });
+
+  function debounce(fn, delay) {
+    let timer = null;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+  }
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    const submitSearch = () => {
+      document.getElementById("searchForm").submit();
+    };
+    searchInput.addEventListener("input", debounce(submitSearch, 300));
+  }
+
+  document.querySelectorAll(".transaction-details h4").forEach((h) => {
+    h.style.cursor = "pointer";
+    h.addEventListener("click", () => {
+      const row = h.closest(".transaction-row");
+      if (!row) return;
+      const next = row.nextElementSibling;
+      if (
+        next &&
+        next.classList &&
+        next.classList.contains("transaction-extra-details")
+      ) {
+        next.classList.toggle("hidden");
+      }
+    });
+  });
 </script>
 {% endblock %}
