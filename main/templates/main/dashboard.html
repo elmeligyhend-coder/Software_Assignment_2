@@ -434,9 +434,7 @@
     color: var(--gray-500);
   }
 </style>
-{% endblock %} {% block content %}
-
-{% include 'components/navbar.html' %}
+{% endblock %} {% block content %} {% include 'components/navbar.html' %}
 <main class="main-content">
   <div class="dashboard-header">
     <div class="welcome-section">
@@ -520,70 +518,34 @@
         <a href="{% url 'transactions' %}" class="card-link">View All</a>
       </div>
       <div class="transaction-list">
+        {% if recent_transactions %} {% for t in recent_transactions %}
         <div class="transaction-item">
           <div class="transaction-left">
-            <div class="transaction-icon food">
-              <i class="fas fa-utensils"></i>
+            <div
+              class="transaction-icon {% if t.transaction_type == 'income' %}income{% elif t.category|lower == 'food' %}food{% elif t.category|lower == 'transport' %}transport{% elif t.category|lower == 'shopping' %}shopping{% elif t.category|lower == 'entertainment' %}entertainment{% elif t.category|lower == 'bills' %}bills{% else %}{% if t.transaction_type == 'income' %}income{% else %}shopping{% endif %}{% endif %}"
+            >
+              <i
+                class="fas {% if t.transaction_type == 'income' %}fa-briefcase{% elif t.category|lower == 'food' %}fa-utensils{% elif t.category|lower == 'transport' %}fa-bus{% elif t.category|lower == 'shopping' %}fa-shopping-bag{% elif t.category|lower == 'entertainment' %}fa-film{% elif t.category|lower == 'bills' %}fa-bolt{% else %}fa-receipt{% endif %}"
+              ></i>
             </div>
             <div class="transaction-details">
-              <h4>Restaurant Dinner</h4>
-              <p>Apr 28, 2026 • Food & Dining</p>
+              <h4>
+                {% if t.name %}{{ t.name }}{% elif t.description %}{{
+                t.description }}{% else %}{{ t.category }}{% endif %}
+              </h4>
+              <p>{{ t.date|date:'M d, Y' }} • {{ t.category }}</p>
             </div>
           </div>
-          <div class="transaction-amount expense">-$45.00</div>
-        </div>
-
-        <div class="transaction-item">
-          <div class="transaction-left">
-            <div class="transaction-icon transport">
-              <i class="fas fa-bus"></i>
-            </div>
-            <div class="transaction-details">
-              <h4>Monthly Pass</h4>
-              <p>Apr 27, 2026 • Transportation</p>
-            </div>
+          <div
+            class="transaction-amount {% if t.transaction_type == 'income' %}income{% else %}expense{% endif %}"
+          >
+            {% if t.transaction_type == 'income' %}+{% else %}-{% endif %}{{
+            t.amount }}
           </div>
-          <div class="transaction-amount expense">-$85.00</div>
         </div>
-
-        <div class="transaction-item">
-          <div class="transaction-left">
-            <div class="transaction-icon income">
-              <i class="fas fa-briefcase"></i>
-            </div>
-            <div class="transaction-details">
-              <h4>Salary Deposit</h4>
-              <p>Apr 25, 2026 • Income</p>
-            </div>
-          </div>
-          <div class="transaction-amount income">+$3,500.00</div>
-        </div>
-
-        <div class="transaction-item">
-          <div class="transaction-left">
-            <div class="transaction-icon shopping">
-              <i class="fas fa-shopping-bag"></i>
-            </div>
-            <div class="transaction-details">
-              <h4>New Headphones</h4>
-              <p>Apr 24, 2026 • Shopping</p>
-            </div>
-          </div>
-          <div class="transaction-amount expense">-$129.99</div>
-        </div>
-
-        <div class="transaction-item">
-          <div class="transaction-left">
-            <div class="transaction-icon bills">
-              <i class="fas fa-bolt"></i>
-            </div>
-            <div class="transaction-details">
-              <h4>Electricity Bill</h4>
-              <p>Apr 22, 2026 • Bills & Utilities</p>
-            </div>
-          </div>
-          <div class="transaction-amount expense">-$78.50</div>
-        </div>
+        {% endfor %} {% else %}
+        <div class="text-center py-4">No recent transactions</div>
+        {% endif %}
       </div>
     </div>
 
