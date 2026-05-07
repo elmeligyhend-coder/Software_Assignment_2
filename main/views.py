@@ -9,6 +9,9 @@ def main(request):
     return render(request,'main/index.html')
 
 def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         full_name = request.POST.get('name')
         email = request.POST.get('email')
@@ -23,11 +26,14 @@ def signup_view(request):
 
         login(request, user)
 
-        return redirect('login')
+        return redirect('dashboard')
     
     return render(request, 'main/signup.html')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -39,18 +45,23 @@ def login_view(request):
             messages.error(request, "Invalid email or password.")
     return render(request, 'main/login.html')
 
+@login_required(login_url='login')
 def dashboard_view(request):
     return render(request,'main/dashboard.html')
 
+@login_required(login_url='login')
 def transactions_view(request):
     return render(request,'main/transactions.html')
 
+@login_required(login_url='login')
 def budgets_view(request):
     return render(request,'main/budgets.html')
 
+@login_required(login_url='login')
 def goals_view(request):
     return render(request,'main/goals.html')
 
+@login_required(login_url='login')
 def reports_view(request):
     return render(request,'main/reports.html')
 
