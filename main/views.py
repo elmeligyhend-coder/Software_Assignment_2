@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 
 from .models import Budget, Goal, Profile, Transaction
+from .services import default_user_service, default_tx_service, default_report_service
 
 """Request handlers (views) for the main budgeting application.
 
@@ -81,9 +82,7 @@ def signup_view(request):
             messages.error(request, "Email already exists!", extra_tags='signup')
             return render(request, 'main/signup.html')
 
-        user = User.objects.create_user(username=email, email=email, password=password)
-        user.first_name = full_name
-        user.save()
+        user = default_user_service.register(username=email, email=email, password=password, full_name=full_name)
         login(request, user)
         return redirect("dashboard")
 
@@ -103,7 +102,7 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
-        user = authenticate(request, username=email, password=password)
+        user = default_user_service.authenticate(username=email, password=password)
         if user is not None:
             login(request, user)
             return redirect("dashboard")
@@ -259,25 +258,17 @@ def transactions_view(request):
         if edit_id:
             try:
                 tx = Transaction.objects.get(pk=edit_id, user=request.user)
-                tx.name = name
-                tx.type = transaction_type
-                tx.amount = amount
-                tx.category = category
-                tx.description = description
-                tx.note = note
-                if tx_date:
-                    tx.date = tx_date
-                tx.save()
+                default_tx_service.update_transaction(tx, name=name, type=transaction_type, amount=amount, category=category, description=description, note=note, date=tx_date)
                 messages.success(request, 'Transaction updated.', extra_tags='transactions')
             except Transaction.DoesNotExist:
                 messages.error(request, 'Transaction not found.', extra_tags='transactions')
             return redirect('transactions')
 
         try:
-            tx = Transaction.objects.create(
+            tx = default_tx_service.create_transaction(
+                transaction_type,
                 user=request.user,
                 name=name,
-                type=transaction_type,
                 amount=amount,
                 category=category,
                 description=description,
@@ -319,7 +310,7 @@ def delete_transaction(request, pk):
         HttpResponse redirecting to the transaction list.
     """
     transaction = Transaction.objects.get(id=pk, user=request.user)
-    transaction.delete()
+    default_tx_service.delete_transaction(transaction)
     return redirect("transactions")
 
 
@@ -537,7 +528,7 @@ def reports_view(request):
         .annotate(total=_Sum("amount"))
         .order_by("-total")
     )
-
+    report_data = default_report_service.generate_expense_report(request.user, start, end)
     palette = [
         "#ef4444",
         "#f59e0b",
@@ -549,17 +540,15 @@ def reports_view(request):
         "#f97316",
     ]
     expense_rows = []
-    for i, r in enumerate(expense_qs):
-        amt = float(r["total"])
+    for i, r in enumerate(report_data.get("rows", [])):
+        amt = float(r.get("total") or 0)
         percent = (amt / float(total_expenses) * 100) if total_expenses else 0
-        expense_rows.append(
-            {
-                "category": r["category"],
-                "total": round(amt, 2),
-                "percent": round(percent, 1),
-                "color": palette[i % len(palette)],
-            }
-        )
+        expense_rows.append({
+            "category": r.get("category"),
+            "total": round(amt, 2),
+            "percent": round(percent, 1),
+            "color": palette[i % len(palette)],
+        })
 
     budgets = Budget.objects.filter(
         user=request.user, period__gte=start.replace(day=1), period__lte=end
