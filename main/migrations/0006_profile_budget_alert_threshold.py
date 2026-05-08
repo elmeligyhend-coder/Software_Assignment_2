@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0005_alter_budget_id_alter_goal_id_alter_profile_id_and_more'),
+        ("main", "0005_alter_budget_id_alter_goal_id_alter_profile_id_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='profile',
-            name='budget_alert_threshold',
+            model_name="profile",
+            name="budget_alert_threshold",
             field=models.PositiveIntegerField(default=90),
         ),
     ]

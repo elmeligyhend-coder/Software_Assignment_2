@@ -549,13 +549,16 @@
   <div
     style="
       background: white;
-      margin: 5% auto;
+      margin: 2% auto; 
       padding: 2rem;
       width: 420px;
+      max-height: 90vh; 
+      overflow-y: auto; 
       border-radius: 15px;
       box-shadow: var(--shadow-lg);
-    "
-  >
+      position: relative;
+    ">
+  
     <h2 style="margin-bottom: 1.5rem">Add / Edit Transaction</h2>
 
     <form method="POST" action="{% url 'transactions' %}" id="transactionForm">

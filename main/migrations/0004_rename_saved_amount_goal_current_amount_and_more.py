@@ -6,38 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0003_transaction_type'),
+        ("main", "0003_transaction_type"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='goal',
-            old_name='saved_amount',
-            new_name='current_amount',
+            model_name="goal",
+            old_name="saved_amount",
+            new_name="current_amount",
         ),
         migrations.RemoveField(
-            model_name='goal',
-            name='name',
+            model_name="goal",
+            name="name",
         ),
         migrations.AddField(
-            model_name='goal',
-            name='category',
-            field=models.CharField(default='Savings', max_length=100),
+            model_name="goal",
+            name="category",
+            field=models.CharField(default="Savings", max_length=100),
         ),
         migrations.AddField(
-            model_name='goal',
-            name='created_at',
+            model_name="goal",
+            name="created_at",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='goal',
-            name='title',
-            field=models.CharField(default='exit', max_length=200),
+            model_name="goal",
+            name="title",
+            field=models.CharField(default="exit", max_length=200),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='goal',
-            name='deadline',
+            model_name="goal",
+            name="deadline",
             field=models.DateField(blank=True, null=True),
         ),
     ]

@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0006_profile_budget_alert_threshold'),
+        ("main", "0006_profile_budget_alert_threshold"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='name',
+            model_name="transaction",
+            name="name",
             field=models.CharField(blank=True, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='transaction',
-            name='note',
+            model_name="transaction",
+            name="note",
             field=models.TextField(blank=True, null=True),
         ),
     ]
