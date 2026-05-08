@@ -5,10 +5,8 @@ admin site.
 """
 
 from django.contrib import admin
-from .models import Transaction
-from .models import Goal
-from .models import Budget
-from .models import Profile
+
+from .models import Budget, Goal, Profile, Transaction
 
 admin.site.register(Transaction)
 admin.site.register(Goal)

@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0002_remove_profile_currency_profile_date_of_birth_and_more'),
+        ("main", "0002_remove_profile_currency_profile_date_of_birth_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='transaction',
-            name='type',
-            field=models.CharField(choices=[('income', 'Income'), ('expense', 'Expense')], default='expense', max_length=10),
+            model_name="transaction",
+            name="type",
+            field=models.CharField(
+                choices=[("income", "Income"), ("expense", "Expense")],
+                default="expense",
+                max_length=10,
+            ),
         ),
     ]

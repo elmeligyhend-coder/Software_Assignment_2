@@ -5,8 +5,8 @@ This module defines the application's primary Django models: `Profile`,
 used by templates and views.
 """
 
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Profile(models.Model):
@@ -34,7 +34,8 @@ class Profile(models.Model):
 
         Returns the username followed by the word "Profile".
         """
-        return f'{self.user.username} Profile'
+        return f"{self.user.username} Profile"
+
 
 class Transaction(models.Model):
     """A financial transaction record.
@@ -64,18 +65,22 @@ class Transaction(models.Model):
     """
 
     TRANSACTION_TYPES = [
-        ('income', 'Income'),
-        ('expense', 'Expense'),
+        ("income", "Income"),
+        ("expense", "Expense"),
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name='Amount',
+        verbose_name="Amount",
         help_text="Transaction amount in the account's currency (e.g., USD).",
     )
     category = models.CharField(max_length=50)
-    type = models.CharField(max_length=10, choices=[('income', 'Income'), ('expense', 'Expense')], default='expense')
+    type = models.CharField(
+        max_length=10,
+        choices=[("income", "Income"), ("expense", "Expense")],
+        default="expense",
+    )
     name = models.CharField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
@@ -97,6 +102,7 @@ class Transaction(models.Model):
         value as the `type` field.
         """
         return self.type
+
 
 class Budget(models.Model):
     """A budget tied to a user and category.
@@ -122,6 +128,7 @@ class Budget(models.Model):
         """Human-readable representation of a budget record."""
         return f"Budget {self.category}: {self.amount_limit} for {self.user.username} ({self.period})"
 
+
 class Goal(models.Model):
     """A saving or financial goal for a user.
 
@@ -144,11 +151,11 @@ class Goal(models.Model):
     """
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200) 
+    title = models.CharField(max_length=200)
     target_amount = models.DecimalField(max_digits=10, decimal_places=2)
     current_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     deadline = models.DateField(null=True, blank=True)
-    category = models.CharField(max_length=100, default='Savings')
+    category = models.CharField(max_length=100, default="Savings")
     created_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
