@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main.models &mdash; PersonalBudgetingSoftware 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PersonalBudgetingSoftware
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">main</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PersonalBudgetingSoftware</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">main.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for main.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Database models for the main budgeting application.</span>
+
+<span class="sd">This module defines the application&#39;s primary Django models: `Profile`,</span>
+<span class="sd">`Transaction`, `Budget`, and `Goal`. Models include convenience properties</span>
+<span class="sd">used by templates and views.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">django.contrib.auth.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+
+
+<div class="viewcode-block" id="Profile">
+<a class="viewcode-back" href="../../main.html#main.models.Profile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Profile</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User profile information attached to a Django `User`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : User</span>
+<span class="sd">        One-to-one link to the Django `User` instance.</span>
+<span class="sd">    phone : str</span>
+<span class="sd">        Optional phone number string.</span>
+<span class="sd">    date_of_birth : date</span>
+<span class="sd">        Optional date of birth.</span>
+<span class="sd">    budget_alert_threshold : int</span>
+<span class="sd">        Percentage threshold used to trigger budget alerts (0-100).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">phone</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date_of_birth</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">budget_alert_threshold</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a human-readable representation of the profile.</span>
+
+<span class="sd">        Returns the username followed by the word &quot;Profile&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s1"> Profile&#39;</span></div>
+
+
+<div class="viewcode-block" id="Transaction">
+<a class="viewcode-back" href="../../main.html#main.models.Transaction">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Transaction</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A financial transaction record.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : User</span>
+<span class="sd">        Owner of the transaction.</span>
+<span class="sd">    amount : Decimal</span>
+<span class="sd">        Monetary amount for the transaction. This field uses a</span>
+<span class="sd">        deferred-loading database implementation; the query is executed</span>
+<span class="sd">        the first time the value is accessed. Use `help_text` and</span>
+<span class="sd">        `verbose_name` on the field to surface human-friendly text in</span>
+<span class="sd">        admin pages and documentation.</span>
+<span class="sd">    category : str</span>
+<span class="sd">        Category name for grouping transactions (e.g., &quot;Food&quot;, &quot;Rent&quot;).</span>
+<span class="sd">    type : str</span>
+<span class="sd">        Either &#39;income&#39; or &#39;expense&#39;.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Optional short title for the transaction.</span>
+<span class="sd">    description : str</span>
+<span class="sd">        Optional long description.</span>
+<span class="sd">    note : str</span>
+<span class="sd">        Optional internal note.</span>
+<span class="sd">    date : datetime</span>
+<span class="sd">        Timestamp when the transaction was created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">TRANSACTION_TYPES</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="s1">&#39;Income&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;expense&#39;</span><span class="p">,</span> <span class="s1">&#39;Expense&#39;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span>
+        <span class="n">max_digits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">verbose_name</span><span class="o">=</span><span class="s1">&#39;Amount&#39;</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Transaction amount in the account&#39;s currency (e.g., USD).&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="s1">&#39;Income&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;expense&#39;</span><span class="p">,</span> <span class="s1">&#39;Expense&#39;</span><span class="p">)],</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;expense&#39;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">note</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a readable description of the transaction.</span>
+
+<span class="sd">        Example: &quot;Expense 12.50 - Food (alice@example.com)&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_type_display</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">amount</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transaction_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias property for template compatibility.</span>
+
+<span class="sd">        Some templates expect `transaction.transaction_type` while the</span>
+<span class="sd">        database field is named `type`. This property returns the same</span>
+<span class="sd">        value as the `type` field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span></div>
+
+
+<div class="viewcode-block" id="Budget">
+<a class="viewcode-back" href="../../main.html#main.models.Budget">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Budget</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A budget tied to a user and category.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : User</span>
+<span class="sd">        Owner of the budget.</span>
+<span class="sd">    category : str</span>
+<span class="sd">        Budget category name.</span>
+<span class="sd">    amount_limit : Decimal</span>
+<span class="sd">        The maximum allowed spending for the budget period.</span>
+<span class="sd">    period : date</span>
+<span class="sd">        The date representing the budgeting period (e.g., month start).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">amount_limit</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">max_digits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Human-readable representation of a budget record.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Budget </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">amount_limit</span><span class="si">}</span><span class="s2"> for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="Goal">
+<a class="viewcode-back" href="../../main.html#main.models.Goal">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Goal</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A saving or financial goal for a user.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    user : User</span>
+<span class="sd">        Owner of the goal.</span>
+<span class="sd">    title : str</span>
+<span class="sd">        A short title for the goal.</span>
+<span class="sd">    target_amount : Decimal</span>
+<span class="sd">        The target amount to reach.</span>
+<span class="sd">    current_amount : Decimal</span>
+<span class="sd">        Current saved amount toward the target.</span>
+<span class="sd">    deadline : date</span>
+<span class="sd">        Optional target date to reach the goal.</span>
+<span class="sd">    category : str</span>
+<span class="sd">        Category for the goal (defaults to &#39;Savings&#39;).</span>
+<span class="sd">    created_at : datetime</span>
+<span class="sd">        Timestamp when the goal was created.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">)</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span> 
+    <span class="n">target_amount</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">max_digits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">current_amount</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DecimalField</span><span class="p">(</span><span class="n">max_digits</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decimal_places</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">deadline</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">category</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Savings&#39;</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a short description for the goal.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">progress_percentage</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate and return the goal progress as an integer percentage.</span>
+
+<span class="sd">        The value is clamped to 100 and returns 0 if `target_amount` is</span>
+<span class="sd">        zero or not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_amount</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">current_amount</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_amount</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

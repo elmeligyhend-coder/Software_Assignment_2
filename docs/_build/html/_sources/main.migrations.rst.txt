@@ -1,0 +1,69 @@
+main.migrations package
+=======================
+
+Submodules
+----------
+
+main.migrations.0001\_initial module
+------------------------------------
+
+.. automodule:: main.migrations.0001_initial
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0002\_remove\_profile\_currency\_profile\_date\_of\_birth\_and\_more module
+-------------------------------------------------------------------------------------------
+
+.. automodule:: main.migrations.0002_remove_profile_currency_profile_date_of_birth_and_more
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0003\_transaction\_type module
+----------------------------------------------
+
+.. automodule:: main.migrations.0003_transaction_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0004\_rename\_saved\_amount\_goal\_current\_amount\_and\_more module
+------------------------------------------------------------------------------------
+
+.. automodule:: main.migrations.0004_rename_saved_amount_goal_current_amount_and_more
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0005\_alter\_budget\_id\_alter\_goal\_id\_alter\_profile\_id\_and\_more module
+----------------------------------------------------------------------------------------------
+
+.. automodule:: main.migrations.0005_alter_budget_id_alter_goal_id_alter_profile_id_and_more
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0006\_profile\_budget\_alert\_threshold module
+--------------------------------------------------------------
+
+.. automodule:: main.migrations.0006_profile_budget_alert_threshold
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+main.migrations.0007\_transaction\_name\_transaction\_note module
+-----------------------------------------------------------------
+
+.. automodule:: main.migrations.0007_transaction_name_transaction_note
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: main.migrations
+   :members:
+   :undoc-members:
+   :show-inheritance:

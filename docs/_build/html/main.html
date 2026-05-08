@@ -1,0 +1,589 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main.models module &mdash; PersonalBudgetingSoftware 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="main" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PersonalBudgetingSoftware
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">main</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">main.models module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main.models.Profile"><code class="docutils literal notranslate"><span class="pre">Profile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Profile.user"><code class="docutils literal notranslate"><span class="pre">Profile.user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Profile.phone"><code class="docutils literal notranslate"><span class="pre">Profile.phone</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Profile.date_of_birth"><code class="docutils literal notranslate"><span class="pre">Profile.date_of_birth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Profile.budget_alert_threshold"><code class="docutils literal notranslate"><span class="pre">Profile.budget_alert_threshold</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main.models.Transaction"><code class="docutils literal notranslate"><span class="pre">Transaction</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.user"><code class="docutils literal notranslate"><span class="pre">Transaction.user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.amount"><code class="docutils literal notranslate"><span class="pre">Transaction.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.category"><code class="docutils literal notranslate"><span class="pre">Transaction.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.type"><code class="docutils literal notranslate"><span class="pre">Transaction.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.name"><code class="docutils literal notranslate"><span class="pre">Transaction.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.description"><code class="docutils literal notranslate"><span class="pre">Transaction.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.note"><code class="docutils literal notranslate"><span class="pre">Transaction.note</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.date"><code class="docutils literal notranslate"><span class="pre">Transaction.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.TRANSACTION_TYPES"><code class="docutils literal notranslate"><span class="pre">Transaction.TRANSACTION_TYPES</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Transaction.transaction_type"><code class="docutils literal notranslate"><span class="pre">Transaction.transaction_type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main.models.Budget"><code class="docutils literal notranslate"><span class="pre">Budget</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Budget.user"><code class="docutils literal notranslate"><span class="pre">Budget.user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Budget.category"><code class="docutils literal notranslate"><span class="pre">Budget.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Budget.amount_limit"><code class="docutils literal notranslate"><span class="pre">Budget.amount_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Budget.period"><code class="docutils literal notranslate"><span class="pre">Budget.period</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#main.models.Goal"><code class="docutils literal notranslate"><span class="pre">Goal</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.user"><code class="docutils literal notranslate"><span class="pre">Goal.user</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.title"><code class="docutils literal notranslate"><span class="pre">Goal.title</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.target_amount"><code class="docutils literal notranslate"><span class="pre">Goal.target_amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.current_amount"><code class="docutils literal notranslate"><span class="pre">Goal.current_amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.deadline"><code class="docutils literal notranslate"><span class="pre">Goal.deadline</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.category"><code class="docutils literal notranslate"><span class="pre">Goal.category</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.created_at"><code class="docutils literal notranslate"><span class="pre">Goal.created_at</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main.models.Goal.progress_percentage"><code class="docutils literal notranslate"><span class="pre">Goal.progress_percentage</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-main.views">main.views module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.signup_view"><code class="docutils literal notranslate"><span class="pre">signup_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.login_view"><code class="docutils literal notranslate"><span class="pre">login_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.dashboard_view"><code class="docutils literal notranslate"><span class="pre">dashboard_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.transactions_view"><code class="docutils literal notranslate"><span class="pre">transactions_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.delete_transaction"><code class="docutils literal notranslate"><span class="pre">delete_transaction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.budgets_view"><code class="docutils literal notranslate"><span class="pre">budgets_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.goals_view"><code class="docutils literal notranslate"><span class="pre">goals_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.reports_view"><code class="docutils literal notranslate"><span class="pre">reports_view()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.profile"><code class="docutils literal notranslate"><span class="pre">profile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main.views.logout_view"><code class="docutils literal notranslate"><span class="pre">logout_view()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PersonalBudgetingSoftware</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">main</a></li>
+      <li class="breadcrumb-item active">main.models module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/main.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-main.models">
+<span id="main-models-module"></span><h1>main.models module<a class="headerlink" href="#module-main.models" title="Link to this heading"></a></h1>
+<p>Database models for the main budgeting application.</p>
+<p>This module defines the application’s primary Django models: <cite>Profile</cite>,
+<cite>Transaction</cite>, <cite>Budget</cite>, and <cite>Goal</cite>. Models include convenience properties
+used by templates and views.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="main.models.Profile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.models.</span></span><span class="sig-name descname"><span class="pre">Profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/models.html#Profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.models.Profile" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>User profile information attached to a Django <cite>User</cite>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Profile.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#main.models.Profile.user" title="Link to this definition"></a></dt>
+<dd><p>One-to-one link to the Django <cite>User</cite> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Profile.phone">
+<span class="sig-name descname"><span class="pre">phone</span></span><a class="headerlink" href="#main.models.Profile.phone" title="Link to this definition"></a></dt>
+<dd><p>Optional phone number string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Profile.date_of_birth">
+<span class="sig-name descname"><span class="pre">date_of_birth</span></span><a class="headerlink" href="#main.models.Profile.date_of_birth" title="Link to this definition"></a></dt>
+<dd><p>Optional date of birth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Profile.budget_alert_threshold">
+<span class="sig-name descname"><span class="pre">budget_alert_threshold</span></span><a class="headerlink" href="#main.models.Profile.budget_alert_threshold" title="Link to this definition"></a></dt>
+<dd><p>Percentage threshold used to trigger budget alerts (0-100).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.models.Transaction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.models.</span></span><span class="sig-name descname"><span class="pre">Transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/models.html#Transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.models.Transaction" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>A financial transaction record.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#main.models.Transaction.user" title="Link to this definition"></a></dt>
+<dd><p>Owner of the transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.amount">
+<span class="sig-name descname"><span class="pre">amount</span></span><a class="headerlink" href="#main.models.Transaction.amount" title="Link to this definition"></a></dt>
+<dd><p>Monetary amount for the transaction. This field uses a
+deferred-loading database implementation; the query is executed
+the first time the value is accessed. Use <cite>help_text</cite> and
+<cite>verbose_name</cite> on the field to surface human-friendly text in
+admin pages and documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#main.models.Transaction.category" title="Link to this definition"></a></dt>
+<dd><p>Category name for grouping transactions (e.g., “Food”, “Rent”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#main.models.Transaction.type" title="Link to this definition"></a></dt>
+<dd><p>Either ‘income’ or ‘expense’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#main.models.Transaction.name" title="Link to this definition"></a></dt>
+<dd><p>Optional short title for the transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.description">
+<span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#main.models.Transaction.description" title="Link to this definition"></a></dt>
+<dd><p>Optional long description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.note">
+<span class="sig-name descname"><span class="pre">note</span></span><a class="headerlink" href="#main.models.Transaction.note" title="Link to this definition"></a></dt>
+<dd><p>Optional internal note.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.date">
+<span class="sig-name descname"><span class="pre">date</span></span><a class="headerlink" href="#main.models.Transaction.date" title="Link to this definition"></a></dt>
+<dd><p>Timestamp when the transaction was created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Transaction.TRANSACTION_TYPES">
+<span class="sig-name descname"><span class="pre">TRANSACTION_TYPES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[('income',</span> <span class="pre">'Income'),</span> <span class="pre">('expense',</span> <span class="pre">'Expense')]</span></em><a class="headerlink" href="#main.models.Transaction.TRANSACTION_TYPES" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="main.models.Transaction.transaction_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transaction_type</span></span><a class="headerlink" href="#main.models.Transaction.transaction_type" title="Link to this definition"></a></dt>
+<dd><p>Alias property for template compatibility.</p>
+<p>Some templates expect <cite>transaction.transaction_type</cite> while the
+database field is named <cite>type</cite>. This property returns the same
+value as the <cite>type</cite> field.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.models.Budget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.models.</span></span><span class="sig-name descname"><span class="pre">Budget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/models.html#Budget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.models.Budget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>A budget tied to a user and category.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Budget.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#main.models.Budget.user" title="Link to this definition"></a></dt>
+<dd><p>Owner of the budget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Budget.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#main.models.Budget.category" title="Link to this definition"></a></dt>
+<dd><p>Budget category name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Budget.amount_limit">
+<span class="sig-name descname"><span class="pre">amount_limit</span></span><a class="headerlink" href="#main.models.Budget.amount_limit" title="Link to this definition"></a></dt>
+<dd><p>The maximum allowed spending for the budget period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Budget.period">
+<span class="sig-name descname"><span class="pre">period</span></span><a class="headerlink" href="#main.models.Budget.period" title="Link to this definition"></a></dt>
+<dd><p>The date representing the budgeting period (e.g., month start).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>date</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.models.Goal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.models.</span></span><span class="sig-name descname"><span class="pre">Goal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/models.html#Goal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.models.Goal" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>A saving or financial goal for a user.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.user">
+<span class="sig-name descname"><span class="pre">user</span></span><a class="headerlink" href="#main.models.Goal.user" title="Link to this definition"></a></dt>
+<dd><p>Owner of the goal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>User</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.title">
+<span class="sig-name descname"><span class="pre">title</span></span><a class="headerlink" href="#main.models.Goal.title" title="Link to this definition"></a></dt>
+<dd><p>A short title for the goal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.target_amount">
+<span class="sig-name descname"><span class="pre">target_amount</span></span><a class="headerlink" href="#main.models.Goal.target_amount" title="Link to this definition"></a></dt>
+<dd><p>The target amount to reach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.current_amount">
+<span class="sig-name descname"><span class="pre">current_amount</span></span><a class="headerlink" href="#main.models.Goal.current_amount" title="Link to this definition"></a></dt>
+<dd><p>Current saved amount toward the target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Decimal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.deadline">
+<span class="sig-name descname"><span class="pre">deadline</span></span><a class="headerlink" href="#main.models.Goal.deadline" title="Link to this definition"></a></dt>
+<dd><p>Optional target date to reach the goal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.category">
+<span class="sig-name descname"><span class="pre">category</span></span><a class="headerlink" href="#main.models.Goal.category" title="Link to this definition"></a></dt>
+<dd><p>Category for the goal (defaults to ‘Savings’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.models.Goal.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#main.models.Goal.created_at" title="Link to this definition"></a></dt>
+<dd><p>Timestamp when the goal was created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="main.models.Goal.progress_percentage">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">progress_percentage</span></span><a class="headerlink" href="#main.models.Goal.progress_percentage" title="Link to this definition"></a></dt>
+<dd><p>Calculate and return the goal progress as an integer percentage.</p>
+<p>The value is clamped to 100 and returns 0 if <cite>target_amount</cite> is
+zero or not set.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-main.views">
+<span id="main-views-module"></span><h1>main.views module<a class="headerlink" href="#module-main.views" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.main">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.main" title="Link to this definition"></a></dt>
+<dd><p>Render the public landing page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> – Django HttpRequest object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse rendering the index template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.signup_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">signup_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#signup_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.signup_view" title="Link to this definition"></a></dt>
+<dd><p>Handle new user signups.</p>
+<p>Validates form fields, creates a new <cite>User</cite> instance and logs the
+user in on successful registration. Uses Django messages for errors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.login_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">login_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#login_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.login_view" title="Link to this definition"></a></dt>
+<dd><p>Authenticate a user and start a session.</p>
+<p>Accepts POST with <cite>email</cite> and <cite>password</cite>. On success redirects to
+the dashboard; otherwise adds an error message and re-renders the
+login form.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.dashboard_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">dashboard_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#dashboard_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.dashboard_view" title="Link to this definition"></a></dt>
+<dd><p>Render the authenticated user’s dashboard.</p>
+<p>The dashboard aggregates recent transactions, budgets and goals to
+present an overview of the user’s financial state.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.transactions_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">transactions_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#transactions_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.transactions_view" title="Link to this definition"></a></dt>
+<dd><p>List, create and update user transactions.</p>
+<p>GET: returns a filtered list of transactions. Supports <cite>type</cite>
+and <cite>search</cite> query params.</p>
+<p>POST: creates a new transaction or updates an existing one when
+<cite>edit_id</cite> is provided. Validation errors are reported via messages
+and redirect back to the transactions page.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.delete_transaction">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">delete_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pk</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#delete_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.delete_transaction" title="Link to this definition"></a></dt>
+<dd><p>Delete a transaction owned by the current user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> – Django HttpRequest object.</p></li>
+<li><p><strong>pk</strong> – Primary key of the transaction to delete.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>HttpResponse redirecting to the transaction list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.budgets_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">budgets_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#budgets_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.budgets_view" title="Link to this definition"></a></dt>
+<dd><p>Manage monthly budgets for the current user.</p>
+<p>GET: renders the budgets for the current month.
+POST: creates or updates a budget for a category for the current
+month and shows a confirmation message.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.goals_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">goals_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#goals_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.goals_view" title="Link to this definition"></a></dt>
+<dd><p>Create, edit, and add funds to financial goals.</p>
+<p>Supports multiple POST actions identified by keys in the POST data
+(e.g., <cite>add_funds</cite>, <cite>edit_goal</cite>, <cite>delete_goal</cite>, <cite>add_goal</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.reports_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">reports_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#reports_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.reports_view" title="Link to this definition"></a></dt>
+<dd><p>Generate financial reports and export them as PDF.</p>
+<p>The view computes aggregates for income, expenses, budgets and
+goals over a date range (default last 30 days) and builds an
+<cite>insights</cite> list with personalized advice. If <cite>export_pdf</cite> is in
+POST, attempts to create a PDF using xhtml2pdf with a WeasyPrint
+fallback.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.profile">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.profile" title="Link to this definition"></a></dt>
+<dd><p>Display and update the current user’s profile.</p>
+<p>Handles updating personal info, changing password, deleting the
+account, and setting the budget alert threshold. Uses Django
+messages to inform the user of success or validation errors.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="main.views.logout_view">
+<span class="sig-prename descclassname"><span class="pre">main.views.</span></span><span class="sig-name descname"><span class="pre">logout_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/main/views.html#logout_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#main.views.logout_view" title="Link to this definition"></a></dt>
+<dd><p>Log out the current user and redirect to the login page.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="main" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
