@@ -34,43 +34,6 @@
     flex-wrap: wrap;
   }
 
-  .filter-btn {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--gray-200);
-    background: white;
-    border-radius: var(--radius);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--gray-600);
-    cursor: pointer;
-    transition: var(--transition);
-  }
-
-  .filter-btn:hover {
-    border-color: var(--primary);
-    color: var(--primary);
-  }
-
-  .filter-btn.active {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: white;
-  }
-
-  .search-box {
-    position: relative;
-    width: 280px;
-  }
-
-  .search-box input {
-    width: 100%;
-    padding: 0.625rem 1rem 0.625rem 2.5rem;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius);
-    font-size: 0.875rem;
-    transition: var(--transition);
-  }
-
   .search-box input:focus {
     outline: none;
     border-color: var(--primary);
@@ -382,26 +345,8 @@
     display: none;
   }
 </style>
-{% endblock %} {% block content %} {% include 'components/navbar.html' %} {% if
-messages %}
-<div
-  id="django-messages"
-  style="position: fixed; top: 1rem; right: 1rem; z-index: 1200"
->
-  {% for message in messages %}
-  <div
-    class="django-message {{ message.tags }}"
-    style="
-      margin-bottom: 0.5rem;
-      padding: 0.75rem 1rem;
-      border-radius: 6px;
-      background: #fff;
-      box-shadow: var(--shadow);
-    "
-  >
-    {{ message }}
-  </div>
-  {% endfor %}
+{% endblock %} {% block content %} {% include 'components/navbar.html' %}
+
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -417,6 +362,17 @@ messages %}
 </script>
 
 <main class="main-content">
+  {% if messages %}
+  <div style="margin-bottom:1rem">
+    {% for message in messages %}
+      {% if 'transactions' in message.tags %}
+      <div style="padding:10px; background-color:{% if 'error' in message.tags %}#fee2e2{% else %}#ecfdf5{% endif %}; color:{% if 'error' in message.tags %}#b91c1c{% else %}#065f46{% endif %}; border-radius:8px; margin-bottom:0.5rem; font-size:0.95rem;">
+        {{ message }}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="transactions-header">
     <div class="header-left">
       <h1>Transactions</h1>

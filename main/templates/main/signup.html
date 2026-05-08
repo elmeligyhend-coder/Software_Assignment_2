@@ -8,7 +8,7 @@
       <div class="logo-text sign-up">Budget<span>Wise</span></div>
     </div>
 
-    {% if messages %} {% for message in messages %}
+    {% if messages %} {% for message in messages %} {% if 'signup' in message.tags %}
     <div
       style="
         padding: 10px;
@@ -22,7 +22,7 @@
     >
       {{ message }}
     </div>
-    {% endfor %} {% endif %}
+    {% endif %} {% endfor %} {% endif %}
     <h1 class="auth-title">Create Account</h1>
     <p class="auth-subtitle">Start your journey to financial freedom</p>
 

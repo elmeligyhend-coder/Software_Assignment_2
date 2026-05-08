@@ -52,30 +52,30 @@ def signup_view(request):
         terms_of_service = request.POST.get('terms_of_service', '')
 
         if not full_name:
-            messages.error(request, "Full name cannot be blank!")
+            messages.error(request, "Full name cannot be blank!", extra_tags='signup')
 
         elif not email:
-            messages.error(request, "Email cannot be blank!")
+            messages.error(request, "Email cannot be blank!", extra_tags='signup')
         
         elif len(password) < 8 :
-            messages.error(request, "Password cannot be less than 8 chars")
+            messages.error(request, "Password cannot be less than 8 chars", extra_tags='signup')
         
         elif password != confirm_password :
-            messages.error(request, "Passwords does not match")
+            messages.error(request, "Passwords does not match", extra_tags='signup')
 
         elif not terms_of_service :
-            messages.error(request, "You've to accept terms of service and privacy policy.")
+            messages.error(request, "You've to accept terms of service and privacy policy.", extra_tags='signup')
 
         else:
             email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
             if not re.match(email_regex, email):
-                messages.error(request, "Enter a valid email address (e.g., name@example.com)!")
+                messages.error(request, "Enter a valid email address (e.g., name@example.com)!", extra_tags='signup')
 
         if messages.get_messages(request):
             return render(request, 'main/signup.html')
 
         if User.objects.filter(username=email).exists():
-            messages.error(request, "Email already exists!")
+            messages.error(request, "Email already exists!", extra_tags='signup')
             return render(request, 'main/signup.html')
 
         user = User.objects.create_user(username=email, email=email, password=password)
@@ -104,7 +104,7 @@ def login_view(request):
             login(request, user)
             return redirect('dashboard')
         else:
-            messages.error(request, "Invalid email or password.")
+            messages.error(request, "Invalid email or password.", extra_tags='login')
     return render(request, 'main/login.html')
 
 
@@ -196,30 +196,30 @@ def transactions_view(request):
         errors = False
 
         if not name:
-            messages.error(request, "Name is required.")
+            messages.error(request, "Name is required.", extra_tags='transactions')
             errors = True
 
         if not amount:
-            messages.error(request, "Amount is required.")
+            messages.error(request, "Amount is required.", extra_tags='transactions')
             errors = True
         else:
             try:
                 amount = float(amount)
             except ValueError:
-                messages.error(request, "Amount must be a valid number.")
+                messages.error(request, "Amount must be a valid number.", extra_tags='transactions')
                 errors = True
 
         if transaction_type not in ['income', 'expense']:
-            messages.error(request, "Invalid transaction type.")
+            messages.error(request, "Invalid transaction type.", extra_tags='transactions')
             errors = True
 
         if not category:
-            messages.error(request, "Category is required.")
+            messages.error(request, "Category is required.", extra_tags='transactions')
             errors = True
 
         tx_date = None
         if not date_str:
-            messages.error(request, "Date is required.")
+            messages.error(request, "Date is required.", extra_tags='transactions')
             errors = True
         else:
             try:
@@ -227,7 +227,7 @@ def transactions_view(request):
                 if timezone.is_naive(tx_date):
                     tx_date = timezone.make_aware(tx_date)
             except Exception:
-                messages.error(request, "Invalid date format. Use YYYY-MM-DD.")
+                messages.error(request, "Invalid date format. Use YYYY-MM-DD.", extra_tags='transactions')
                 errors = True
 
         if errors:
@@ -245,9 +245,9 @@ def transactions_view(request):
                 if tx_date:
                     tx.date = tx_date
                 tx.save()
-                messages.success(request, 'Transaction updated.')
+                messages.success(request, 'Transaction updated.', extra_tags='transactions')
             except Transaction.DoesNotExist:
-                messages.error(request, 'Transaction not found.')
+                messages.error(request, 'Transaction not found.', extra_tags='transactions')
             return redirect('transactions')
 
         try:
@@ -261,9 +261,9 @@ def transactions_view(request):
                 note=note,
                 date=tx_date,
             )
-            messages.success(request, 'Transaction added successfully!')
+            messages.success(request, 'Transaction added successfully!', extra_tags='transactions')
         except Exception as e:
-            messages.error(request, f'Failed to add transaction: {str(e)}')
+            messages.error(request, f'Failed to add transaction: {str(e)}', extra_tags='transactions')
 
         return redirect('transactions')
 
@@ -322,7 +322,7 @@ def budgets_view(request):
             period=current_period,
             defaults={'amount_limit': amount_limit}
         )
-        messages.success(request, f"Budget for {category} updated for this month!")
+        messages.success(request, f"Budget for {category} updated for this month!", extra_tags='budgets')
         return redirect('budgets')
 
     budget_data = []
@@ -374,7 +374,7 @@ def goals_view(request):
                 goal = Goal.objects.get(id=goal_id, user=request.user)
                 goal.current_amount += Decimal(amount)
                 goal.save()
-                messages.success(request, f"Successfully added ${amount} to {goal.title}!")
+                messages.success(request, f"Successfully added ${amount} to {goal.title}!", extra_tags='goals')
             return redirect('goals')
         elif 'edit_goal' in request.POST:
             goal_id = request.POST.get('goal_id')
@@ -383,7 +383,7 @@ def goals_view(request):
                 goal.title = request.POST.get('title')
                 goal.target_amount = request.POST.get('target_amount')
                 goal.save()
-                messages.success(request, "Goal updated successfully!")
+                messages.success(request, "Goal updated successfully!", extra_tags='goals')
             return redirect('goals')
 
         elif 'delete_goal' in request.POST:
@@ -391,7 +391,7 @@ def goals_view(request):
             goal = Goal.objects.filter(id=goal_id, user=request.user).first()
             if goal:
                 goal.delete()
-                messages.success(request, "Goal deleted successfully!")
+                messages.success(request, "Goal deleted successfully!", extra_tags='goals')
             return redirect('goals')
 
         elif 'add_goal' in request.POST:
@@ -404,7 +404,7 @@ def goals_view(request):
                 target_amount=target,
                 deadline=deadline
             )
-            messages.success(request, "New financial goal created successfully!")
+            messages.success(request, "New financial goal created successfully!", extra_tags='goals')
             return redirect('goals')
 
     total_saved = goals_queryset.aggregate(Sum('current_amount'))['current_amount__sum'] or 0
@@ -634,7 +634,7 @@ def reports_view(request):
             logging.exception('WeasyPrint fallback failed')
 
         err_msg = 'PDF generation failed on the server. Ensure xhtml2pdf or WeasyPrint is installed and working.'
-        messages.error(request, err_msg)
+        messages.error(request, err_msg, extra_tags='reports')
         return HttpResponse(err_msg, status=500, content_type='text/plain')
 
     return render(request, 'main/reports.html', context)
@@ -655,12 +655,12 @@ def profile(request):
             try:
                 val = int(request.POST.get('budget_alert_threshold') or user_profile.budget_alert_threshold)
             except (TypeError, ValueError):
-                messages.error(request, 'Invalid budget alert threshold value.')
+                messages.error(request, 'Invalid budget alert threshold value.', extra_tags='profile')
                 return redirect('profile')
             val = max(0, min(100, val))
             user_profile.budget_alert_threshold = val
             user_profile.save()
-            messages.success(request, f'Budget alert threshold set to {val}%')
+            messages.success(request, f'Budget alert threshold set to {val}%', extra_tags='profile')
             return redirect('profile')
         if 'first_name' in request.POST or 'email' in request.POST:
             first_name = request.POST.get('first_name')
@@ -669,10 +669,10 @@ def profile(request):
             dob = request.POST.get('dob')
             email = email.strip() if email else email
             if not email :
-                messages.error(request, 'Email cannot be blank')
+                messages.error(request, 'Email cannot be blank', extra_tags='profile')
                 return redirect('profile')
             if email and User.objects.filter(username=email).exclude(pk=user.pk).exists():
-                messages.error(request, 'Email already in use by another account.')
+                messages.error(request, 'Email already in use by another account.', extra_tags='profile')
                 return redirect('profile')
             user.first_name = first_name
             user.email = email
@@ -683,7 +683,7 @@ def profile(request):
             if dob:
                 user_profile.date_of_birth = dob
             user_profile.save()
-            messages.success(request, 'Profile updated successfully!')
+            messages.success(request, 'Profile updated successfully!', extra_tags='profile')
             return redirect('profile')
 
         if 'update_password' in request.POST:
@@ -691,39 +691,39 @@ def profile(request):
             new = request.POST.get('new_password')
             confirm = request.POST.get('new_password_confirm')
             if not current or not new or not confirm:
-                messages.error(request, 'Please fill all password fields.')
+                messages.error(request, 'Please fill all password fields.', extra_tags='profile')
                 return redirect('profile')
             if not user.check_password(current):
-                messages.error(request, 'Current password is incorrect.')
+                messages.error(request, 'Current password is incorrect.', extra_tags='profile')
                 return redirect('profile')
             if new != confirm:
-                messages.error(request, 'New passwords do not match.')
+                messages.error(request, 'New passwords do not match.', extra_tags='profile')
                 return redirect('profile')
             if len(new) < 8:
-                messages.error(request, 'Password must be at least 8 characters.')
+                messages.error(request, 'Password must be at least 8 characters.', extra_tags='profile')
                 return redirect('profile')
             user.set_password(new)
             user.save()
             update_session_auth_hash(request, user)
-            messages.success(request, 'Password updated successfully.')
+            messages.success(request, 'Password updated successfully.', extra_tags='profile')
             return redirect('profile')
 
         if 'delete_account' in request.POST:
             confirm_pw = request.POST.get('confirm_password')
             if not confirm_pw:
-                messages.error(request, 'Please enter your password to confirm account deletion.')
+                messages.error(request, 'Please enter your password to confirm account deletion.', extra_tags='profile')
                 return redirect('profile')
             if not user.check_password(confirm_pw):
-                messages.error(request, 'Password incorrect. Account not deleted.')
+                messages.error(request, 'Password incorrect. Account not deleted.', extra_tags='profile')
                 return redirect('profile')
             username = user.username
             try:
                 user.delete()
                 logout(request)
-                messages.success(request, f'Account {username} deleted successfully.')
+                messages.success(request, f'Account {username} deleted successfully.', extra_tags='profile')
                 return redirect('login')
             except Exception:
-                messages.error(request, 'Failed to delete account. Please contact support.')
+                messages.error(request, 'Failed to delete account. Please contact support.', extra_tags='profile')
                 return redirect('profile')
     transactions_count = Transaction.objects.filter(user=request.user).count()
     active_goals_count = Goal.objects.filter(user=request.user, current_amount__lt=F('target_amount')).count()

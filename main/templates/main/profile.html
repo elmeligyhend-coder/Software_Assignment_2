@@ -328,13 +328,13 @@
     </div>
   </div>
   {% if messages %}
-  <div style="margin-bottom: 1rem">
+  <div style="margin-bottom:1rem">
     {% for message in messages %}
-    <div
-      style="padding: 10px; background-color: {% if message.tags == 'error' %}#fee2e2{% else %}#ecfdf5{% endif %}; color: {% if message.tags == 'error' %}#b91c1c{% else %}#065f46{% endif %}; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.95rem;"
-    >
-      {{ message }}
-    </div>
+      {% if 'profile' in message.tags %}
+      <div style="padding:10px; background-color:{% if 'error' in message.tags %}#fee2e2{% else %}#ecfdf5{% endif %}; color:{% if 'error' in message.tags %}#b91c1c{% else %}#065f46{% endif %}; border-radius:8px; margin-bottom:0.5rem; font-size:0.95rem;">
+        {{ message }}
+      </div>
+      {% endif %}
     {% endfor %}
   </div>
   {% endif %}

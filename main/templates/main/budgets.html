@@ -369,10 +369,19 @@
     text-align: center;
   }
 </style>
-{% endblock %} {% block content %}
-{% include 'components/navbar.html' %}
+{% endblock %} {% block content %} {% include 'components/navbar.html' %} 
 
-<main class="main-content">
+<main class="main-content">{% if messages %}
+  <div style="margin-bottom:1rem">
+    {% for message in messages %}
+      {% if 'budgets' in message.tags %}
+      <div style="padding:10px; background-color:{% if 'error' in message.tags %}#fee2e2{% else %}#ecfdf5{% endif %}; color:{% if 'error' in message.tags %}#b91c1c{% else %}#065f46{% endif %}; border-radius:8px; margin-bottom:0.5rem; font-size:0.95rem;">
+        {{ message }}
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
   <div class="budgets-header">
     <div class="header-left">
       <h1>Budgets</h1>
@@ -397,12 +406,16 @@
       <div class="summary-label">Total Spent</div>
     </div>
     <div class="summary-card">
-      <div class="summary-icon remaining"><i class="fas fa-piggy-bank"></i></div>
+      <div class="summary-icon remaining">
+        <i class="fas fa-piggy-bank"></i>
+      </div>
       <div class="summary-value">${{ total_remaining }}</div>
       <div class="summary-label">Remaining</div>
     </div>
     <div class="summary-card">
-      <div class="summary-icon over"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="summary-icon over">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
       <div class="summary-value">{{ over_budget_count }}</div>
       <div class="summary-label">Over Budget</div>
     </div>
@@ -414,19 +427,18 @@
       <div class="budget-header">
         <div class="budget-category">
           <div class="budget-icon {{ item.budget.category|lower }}">
-            <i class="fas 
-              {% if 'Food' in item.budget.category %}fa-utensils
-              {% elif 'Transport' in item.budget.category %}fa-bus
-              {% elif 'Bill' in item.budget.category %}fa-bolt
-              {% elif 'Shopping' in item.budget.category %}fa-shopping-bag
-              {% else %}fa-wallet{% endif %}"></i>
+            <i
+              class="fas {% if 'Food' in item.budget.category %}fa-utensils {% elif 'Transport' in item.budget.category %}fa-bus {% elif 'Bill' in item.budget.category %}fa-bolt {% elif 'Shopping' in item.budget.category %}fa-shopping-bag {% else %}fa-wallet{% endif %}"
+            ></i>
           </div>
           <div class="budget-info">
             <h3>{{ item.budget.category }}</h3>
             <p>Limit for this month</p>
           </div>
         </div>
-        <span class="budget-status {% if item.is_exceeded %}over{% elif item.progress > 80 %}warning{% else %}on-track{% endif %}">
+        <span
+          class="budget-status {% if item.is_exceeded %}over{% elif item.progress > 80 %}warning{% else %}on-track{% endif %}"
+        >
           {{ item.progress|floatformat:0 }}% Used
         </span>
       </div>
@@ -437,29 +449,35 @@
       </div>
 
       <div class="budget-progress">
-        <div class="budget-progress-fill {% if item.is_exceeded %}red{% elif item.progress > 80 %}yellow{% else %}green{% endif %}" 
-             style="width: {{ item.progress }}%"></div>
+        <div
+          class="budget-progress-fill {% if item.is_exceeded %}red{% elif item.progress > 80 %}yellow{% else %}green{% endif %}"
+          style="width: {{ item.progress }}%"
+        ></div>
       </div>
 
       <div class="budget-footer">
-        <div class="budget-remaining {% if item.is_exceeded %}negative{% else %}positive{% endif %}">
+        <div
+          class="budget-remaining {% if item.is_exceeded %}negative{% else %}positive{% endif %}"
+        >
           {% if item.is_exceeded %}
-            <span class="amount">-${{ item.over_by }}</span> over budget
-          {% else %}
-            <span class="amount">${{ item.remaining }}</span> remaining
-          {% endif %}
+          <span class="amount">-${{ item.over_by }}</span> over budget {% else %} <span class="amount">${{ item.remaining }}</span> remaining {% endif %}
         </div>
         <div class="budget-actions">
-          <button class="budget-btn edit" 
-                onclick="openEditModal('{{ item.budget.category }}', '{{ item.budget.amount_limit }}')">
-              <i class="fas fa-edit"></i>
+          <button
+            class="budget-btn edit"
+            onclick="openEditModal('{{ item.budget.category }}', '{{ item.budget.amount_limit }}')"
+          >
+            <i class="fas fa-edit"></i>
           </button>
         </div>
       </div>
     </div>
     {% endfor %}
 
-    <div class="add-budget-card" onclick="document.getElementById('budgetModal').style.display='block'">
+    <div
+      class="add-budget-card"
+      onclick="document.getElementById('budgetModal').style.display = 'block'"
+    >
       <div class="add-icon"><i class="fas fa-plus"></i></div>
       <h3>Add New Budget</h3>
       <p>Set a new limit</p>
@@ -467,14 +485,38 @@
   </div>
 </main>
 
-<div id="budgetModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-  <div style="background:white; width:400px; margin:100px auto; padding:2rem; border-radius:15px;">
+<div
+  id="budgetModal"
+  style="
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  "
+>
+  <div
+    style="
+      background: white;
+      width: 400px;
+      margin: 100px auto;
+      padding: 2rem;
+      border-radius: 15px;
+    "
+  >
     <h3>Add/Update Budget</h3>
     <form method="POST">
       {% csrf_token %}
-      <div style="margin:1rem 0;">
+      <div style="margin: 1rem 0">
         <label>Category:</label>
-        <select name="category" class="form-control" style="width:100%; padding:0.5rem;">
+        <select
+          name="category"
+          class="form-control"
+          style="width: 100%; padding: 0.5rem"
+        >
           <option value="Food">Food</option>
           <option value="Transportation">Transportation</option>
           <option value="Shopping">Shopping</option>
@@ -482,24 +524,58 @@
           <option value="Entertainment">Entertainment</option>
         </select>
       </div>
-      <div style="margin:1rem 0;">
+      <div style="margin: 1rem 0">
         <label>Amount Limit:</label>
-        <input type="number" name="amount_limit" step="0.01" class="form-control" style="width:100%; padding:0.5rem;" required>
+        <input
+          type="number"
+          name="amount_limit"
+          step="0.01"
+          class="form-control"
+          style="width: 100%; padding: 0.5rem"
+          required
+        />
       </div>
-      <button type="submit" class="btn btn-primary" style="width:100%; padding:0.75rem; background:var(--primary); color:white; border:none; border-radius:8px;">Save Budget</button>
-      <button type="button" onclick="this.parentElement.parentElement.parentElement.style.display='none'" style="width:100%; margin-top:0.5rem; background:none; border:none; color:gray;">Cancel</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="
+          width: 100%;
+          padding: 0.75rem;
+          background: var(--primary);
+          color: white;
+          border: none;
+          border-radius: 8px;
+        "
+      >
+        Save Budget
+      </button>
+      <button
+        type="button"
+        onclick="
+          this.parentElement.parentElement.parentElement.style.display = 'none'
+        "
+        style="
+          width: 100%;
+          margin-top: 0.5rem;
+          background: none;
+          border: none;
+          color: gray;
+        "
+      >
+        Cancel
+      </button>
     </form>
   </div>
 </div>
 <script>
-function openEditModal(category, amount) {
-    const modal = document.getElementById('budgetModal');
+  function openEditModal(category, amount) {
+    const modal = document.getElementById("budgetModal");
     const categorySelect = modal.querySelector('select[name="category"]');
     const amountInput = modal.querySelector('input[name="amount_limit"]');
-    
+
     categorySelect.value = category;
     amountInput.value = amount;
-    modal.style.display = 'block';
-}
+    modal.style.display = "block";
+  }
 </script>
 {% endblock %}

@@ -17,9 +17,15 @@
     width: 100%;
     height: 6px;
   }
-  .goal-card.status-active::before { background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%); } 
-  .goal-card.status-completed::before { background: linear-gradient(90deg, #10b981 0%, #34d399 100%); } 
-  .goal-card.status-overdue::before { background: linear-gradient(90deg, #ef4444 0%, #f87171 100%); } 
+  .goal-card.status-active::before {
+    background: linear-gradient(90deg, #8b5cf6 0%, #a78bfa 100%);
+  }
+  .goal-card.status-completed::before {
+    background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+  }
+  .goal-card.status-overdue::before {
+    background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+  }
   .goal-icon {
     width: 56px;
     height: 56px;
@@ -29,18 +35,36 @@
     justify-content: center;
     font-size: 1.5rem;
   }
-  .goal-card.status-active .goal-icon { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-  .goal-card.status-completed .goal-icon { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-  .goal-card.status-overdue .goal-icon { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  .goal-card.status-active .goal-icon {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+  }
+  .goal-card.status-completed .goal-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+  .goal-card.status-overdue .goal-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
   .goal-status {
     padding: 0.375rem 0.875rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 600;
   }
-  .goal-status.status-active { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-  .goal-status.status-completed { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-  .goal-status.status-overdue { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+  .goal-status.status-active {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+  }
+  .goal-status.status-completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+  .goal-status.status-overdue {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
 
   .goal-status.status-active {
     background: rgba(139, 92, 246, 0.1) !important;
@@ -319,16 +343,19 @@
     margin-top: 0.25rem;
   }
 </style>
-{% endblock %} {% block content %}
-{% include 'components/navbar.html' %}
+{% endblock %} {% block content %} {% include 'components/navbar.html' %}
 
 <main class="main-content">
   {% if messages %}
+  <div style="margin-bottom:1rem">
     {% for message in messages %}
-      <div class="alert" style="margin-bottom: 20px; padding: 15px; border-radius: 10px; background: #d1fae5; color: #065f46;">
+      {% if 'goals' in message.tags %}
+      <div style="padding:10px; background-color:{% if 'error' in message.tags %}#fee2e2{% else %}#ecfdf5{% endif %}; color:{% if 'error' in message.tags %}#b91c1c{% else %}#065f46{% endif %}; border-radius:8px; margin-bottom:0.5rem; font-size:0.95rem;">
         {{ message }}
       </div>
+      {% endif %}
     {% endfor %}
+  </div>
   {% endif %}
 
   <div class="page-header">
@@ -368,51 +395,63 @@
 
   <div class="goal-grid">
     {% for goal in goals %}
-    <div class="goal-card 
-    {% if goal.is_completed %} status-completed
-    {% elif goal.deadline < today %} status-overdue
-    {% else %} status-active {% endif %}">
+    <div
+      class="goal-card {% if goal.is_completed %} status-completed {% elif goal.deadline < today %} status-overdue {% else %} status-active {% endif %}"
+    >
       <div class="goal-header">
         <div class="goal-info">
           <div class="goal-icon">
-            <i class="fas 
-                {% if 'Vacation' in goal.title %}fa-plane
-                {% elif 'Laptop' in goal.title %}fa-laptop
-                {% elif 'Jacket' in goal.title or 'Clothes' in goal.title %}fa-tshirt
-                {% elif goal.is_completed %}fa-gift
-                {% else %}fa-bullseye{% endif %}">
+            <i
+              class="fas {% if 'Vacation' in goal.title %}fa-plane {% elif 'Laptop' in goal.title %}fa-laptop {% elif 'Jacket' in goal.title or 'Clothes' in goal.title %}fa-tshirt {% elif goal.is_completed %}fa-gift {% else %}fa-bullseye{% endif %}"
+            >
             </i>
           </div>
           <div>
             <div class="goal-name">{{ goal.title }}</div>
-            <div class="goal-deadline {% if goal.deadline < today and not goal.is_completed %}text-danger{% endif %}">
-                Target: {{ goal.deadline|date:"M d, Y" }}
-                {% if goal.deadline < today and not goal.is_completed %} (Overdue!) {% endif %}
+            <div
+              class="goal-deadline {% if goal.deadline < today and not goal.is_completed %}text-danger{% endif %}"
+            >
+              Target: {{ goal.deadline|date:"M d, Y" }} 
+              
+              
+              {%if goal.deadline < today and not goal.is_completed%} (Overdue!) {%endif%}
             </div>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span class="goal-status 
-            {% if goal.is_completed %} status-completed
-            {% elif goal.deadline < today %} status-overdue
-            {% else %} status-active {% endif %}">
-            
-            {% if goal.is_completed %} Done!
-            {% elif goal.deadline < today %} Delayed
-            {% else %} In Progress {% endif %}
-          </span> 
-          <form method="POST" action="" onsubmit="return confirm('Are you sure you want to delete this goal?');">
-              {% csrf_token %}
-              <input type="hidden" name="delete_goal" value="true">
-              <input type="hidden" name="goal_id" value="{{ goal.id }}">
-              
-              <button type="submit" style="background: none; border: none; color: #ef4444; cursor: pointer;">
-                  <i class="fas fa-trash-alt"></i>
-              </button>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <span
+            class="goal-status {% if goal.is_completed %} status-completed {% elif goal.deadline < today %} status-overdue {% else %} status-active {% endif %}"
+          >
+            {% if goal.is_completed %} Done! {% elif goal.deadline < today %}
+            Delayed {% else %} In Progress {% endif %}
+          </span>
+          <form
+            method="POST"
+            action=""
+            onsubmit="
+              return confirm('Are you sure you want to delete this goal?');
+            "
+          >
+            {% csrf_token %}
+            <input type="hidden" name="delete_goal" value="true" />
+            <input type="hidden" name="goal_id" value="{{ goal.id }}" />
+
+            <button
+              type="submit"
+              style="
+                background: none;
+                border: none;
+                color: #ef4444;
+                cursor: pointer;
+              "
+            >
+              <i class="fas fa-trash-alt"></i>
+            </button>
           </form>
         </div>
-      </div> <div class="goal-amounts">
+      </div>
+      <div class="goal-amounts">
         <div class="goal-current">${{ goal.current_amount }}</div>
         <div class="goal-target">of <span>${{ goal.target_amount }}</span></div>
       </div>
@@ -422,18 +461,26 @@
           <span class="progress-percentage">{{ goal.progress }}%</span>
         </div>
         <div class="progress-bar">
-          <div class="progress-fill {% if goal.is_completed %}success{% elif goal.deadline < now.date %}warning{% else %}primary{% endif %}" 
-               style="width: {{ goal.progress }}%"></div>
+          <div
+            class="progress-fill {% if goal.is_completed %}success{% elif goal.deadline < now.date %}warning{% else %}primary{% endif %}"
+            style="width: {{ goal.progress }}%"
+          ></div>
         </div>
       </div>
 
       <div class="goal-actions">
-        {% if not goal.is_completed %}
-        <button class="btn btn-secondary" onclick="openAddFundsModal('{{ goal.id }}', '{{ goal.title }}')">
+        {%if not goal.is_completed%}
+        <button
+          class="btn btn-secondary"
+          onclick="openAddFundsModal('{{ goal.id }}', '{{ goal.title }}')"
+        >
           <i class="fas fa-plus"></i> Add Funds
         </button>
-        {% endif %}
-        <button class="btn btn-primary" onclick="openEditModal('{{ goal.id }}', '{{ goal.title }}', '{{ goal.target_amount }}')">
+        {%endif%}
+        <button
+          class="btn btn-primary"
+          onclick="openEditModal('{{ goal.id }}', '{{ goal.title }}', '{{ goal.target_amount }}')"
+        >
           <i class="fas fa-edit"></i> Edit
         </button>
       </div>
@@ -447,110 +494,267 @@
     </div>
   </div>
 </main>
-<div id="addGoalModal" class="modal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
-    <div class="modal-content" style="background: white; margin: 10% auto; padding: 20px; width: 400px; border-radius: 15px;">
-        <h3>Add New Financial Goal</h3>
-        <hr>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="add_goal" value="1">
-            
-            <div style="margin-bottom: 15px;">
-                <label>Goal Title</label>
-                <input type="text" name="title" class="form-control" placeholder="e.g. New Laptop" required style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
+<div
+  id="addGoalModal"
+  class="modal"
+  style="
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  "
+>
+  <div
+    class="modal-content"
+    style="
+      background: white;
+      margin: 10% auto;
+      padding: 20px;
+      width: 400px;
+      border-radius: 15px;
+    "
+  >
+    <h3>Add New Financial Goal</h3>
+    <hr />
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="add_goal" value="1" />
 
-            <div style="margin-bottom: 15px;">
-                <label>Target Amount ($)</label>
-                <input type="number" name="target_amount" class="form-control" placeholder="2000" required style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
+      <div style="margin-bottom: 15px">
+        <label>Goal Title</label>
+        <input
+          type="text"
+          name="title"
+          class="form-control"
+          placeholder="e.g. New Laptop"
+          required
+          style="width: 100%; padding: 8px; margin-top: 5px"
+        />
+      </div>
 
-            <div style="margin-bottom: 15px;">
-                <label>Deadline</label>
-                <input type="date" name="deadline" class="form-control" required style="width: 100%; padding: 8px; margin-top: 5px;">
-            </div>
+      <div style="margin-bottom: 15px">
+        <label>Target Amount ($)</label>
+        <input
+          type="number"
+          name="target_amount"
+          class="form-control"
+          placeholder="2000"
+          required
+          style="width: 100%; padding: 8px; margin-top: 5px"
+        />
+      </div>
 
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" onclick="closeModal()" style="background: #ccc; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Cancel</button>
-                <button type="submit" style="background: var(--primary-color, #4f46e5); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Save Goal</button>
-            </div>
-        </form>
-    </div>
+      <div style="margin-bottom: 15px">
+        <label>Deadline</label>
+        <input
+          type="date"
+          name="deadline"
+          class="form-control"
+          required
+          style="width: 100%; padding: 8px; margin-top: 5px"
+        />
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end">
+        <button
+          type="button"
+          onclick="closeModal()"
+          style="
+            background: #ccc;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          style="
+            background: var(--primary-color, #4f46e5);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+          "
+        >
+          Save Goal
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
-<div id="addFundsModal" class="modal" style="display:none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
-    <div class="modal-content" style="background: white; margin: 15% auto; padding: 25px; width: 350px; border-radius: 20px;">
-        <h3 id="fundGoalTitle">Add Funds</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="add_funds" value="1">
-            <input type="hidden" name="goal_id" id="fundGoalId">
-            <input type="number" name="amount" step="0.01" class="form-control" placeholder="Amount to add" required style="width: 100%; padding: 10px; margin: 15px 0;">
-            <div style="display: flex; gap: 10px;">
-                <button type="button" onclick="closeFundsModal()" class="btn" style="background:#eee; flex:1;">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="flex:1;">Save</button>
-            </div>
-        </form>
-    </div>
+<div
+  id="addFundsModal"
+  class="modal"
+  style="
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  "
+>
+  <div
+    class="modal-content"
+    style="
+      background: white;
+      margin: 15% auto;
+      padding: 25px;
+      width: 350px;
+      border-radius: 20px;
+    "
+  >
+    <h3 id="fundGoalTitle">Add Funds</h3>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="add_funds" value="1" />
+      <input type="hidden" name="goal_id" id="fundGoalId" />
+      <input
+        type="number"
+        name="amount"
+        step="0.01"
+        class="form-control"
+        placeholder="Amount to add"
+        required
+        style="width: 100%; padding: 10px; margin: 15px 0"
+      />
+      <div style="display: flex; gap: 10px">
+        <button
+          type="button"
+          onclick="closeFundsModal()"
+          class="btn"
+          style="background: #eee; flex: 1"
+        >
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" style="flex: 1">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
-<div id="editGoalModal" class="modal" style="display:none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
-    <div class="modal-content" style="background: white; margin: 10% auto; padding: 25px; width: 400px; border-radius: 20px;">
-        <h3>Edit Goal</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="edit_goal" value="1">
-            <input type="hidden" name="goal_id" id="editGoalId">
-            <div style="margin-bottom: 15px;">
-                <label>Title</label>
-                <input type="text" name="title" id="editTitle" class="form-control" style="width:100%; padding:8px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label>Target Amount</label>
-                <input type="number" name="target_amount" id="editTarget" class="form-control" style="width:100%; padding:8px;">
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <button type="button" onclick="closeEditModal()" class="btn" style="background:#eee; flex:1;">Cancel</button>
-                <button type="submit" class="btn btn-primary" style="flex:1;">Update</button>
-            </div>
-        </form>
-    </div>
+<div
+  id="editGoalModal"
+  class="modal"
+  style="
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  "
+>
+  <div
+    class="modal-content"
+    style="
+      background: white;
+      margin: 10% auto;
+      padding: 25px;
+      width: 400px;
+      border-radius: 20px;
+    "
+  >
+    <h3>Edit Goal</h3>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="edit_goal" value="1" />
+      <input type="hidden" name="goal_id" id="editGoalId" />
+      <div style="margin-bottom: 15px">
+        <label>Title</label>
+        <input
+          type="text"
+          name="title"
+          id="editTitle"
+          class="form-control"
+          style="width: 100%; padding: 8px"
+        />
+      </div>
+      <div style="margin-bottom: 15px">
+        <label>Target Amount</label>
+        <input
+          type="number"
+          name="target_amount"
+          id="editTarget"
+          class="form-control"
+          style="width: 100%; padding: 8px"
+        />
+      </div>
+      <div style="display: flex; gap: 10px">
+        <button
+          type="button"
+          onclick="closeEditModal()"
+          class="btn"
+          style="background: #eee; flex: 1"
+        >
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary" style="flex: 1">
+          Update
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
   function openModal() {
-        document.getElementById('addGoalModal').style.display = 'block';
+    document.getElementById("addGoalModal").style.display = "block";
+  }
+  function closeModal() {
+    document.getElementById("addGoalModal").style.display = "none";
+  }
+  window.onclick = function (event) {
+    let modal = document.getElementById("addGoalModal");
+    if (event.target == modal) {
+      closeModal();
     }
-    function closeModal() {
-        document.getElementById('addGoalModal').style.display = 'none';
-    }
-    window.onclick = function(event) {
-        let modal = document.getElementById('addGoalModal');
-        if (event.target == modal) {
-            closeModal();
-        }
-    }
-    function openModal() { document.getElementById('addGoalModal').style.display = 'block'; }
-    function closeModal() { document.getElementById('addGoalModal').style.display = 'none'; }
+  };
+  function openModal() {
+    document.getElementById("addGoalModal").style.display = "block";
+  }
+  function closeModal() {
+    document.getElementById("addGoalModal").style.display = "none";
+  }
 
-    function openAddFundsModal(id, title) {
-        document.getElementById('fundGoalId').value = id;
-        document.getElementById('fundGoalTitle').innerText = 'Add Funds to ' + title;
-        document.getElementById('addFundsModal').style.display = 'block';
-    }
-    function closeFundsModal() { document.getElementById('addFundsModal').style.display = 'none'; }
+  function openAddFundsModal(id, title) {
+    document.getElementById("fundGoalId").value = id;
+    document.getElementById("fundGoalTitle").innerText =
+      "Add Funds to " + title;
+    document.getElementById("addFundsModal").style.display = "block";
+  }
+  function closeFundsModal() {
+    document.getElementById("addFundsModal").style.display = "none";
+  }
 
-    function openEditModal(id, title, target) {
-        document.getElementById('editGoalId').value = id;
-        document.getElementById('editTitle').value = title;
-        document.getElementById('editTarget').value = target;
-        document.getElementById('editGoalModal').style.display = 'block';
-    }
-    function closeEditModal() { document.getElementById('editGoalModal').style.display = 'none'; }
+  function openEditModal(id, title, target) {
+    document.getElementById("editGoalId").value = id;
+    document.getElementById("editTitle").value = title;
+    document.getElementById("editTarget").value = target;
+    document.getElementById("editGoalModal").style.display = "block";
+  }
+  function closeEditModal() {
+    document.getElementById("editGoalModal").style.display = "none";
+  }
 
-    window.onclick = function(event) {
-        if (event.target.className === 'modal') {
-            event.target.style.display = 'none';
-        }
+  window.onclick = function (event) {
+    if (event.target.className === "modal") {
+      event.target.style.display = "none";
     }
+  };
 </script>
 {% endblock %}
